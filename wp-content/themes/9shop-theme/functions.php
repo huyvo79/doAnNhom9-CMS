@@ -75,6 +75,11 @@ function myshop_enqueue_assets() {
 }
 add_action('wp_enqueue_scripts', 'myshop_enqueue_assets');
 
+function my_custom_styles() {
+    wp_enqueue_style('custom-style', get_template_directory_uri() . '/assets/css/custom.css');
+}
+add_action('wp_enqueue_scripts', 'my_custom_styles');
+
 
 
 /**

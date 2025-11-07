@@ -1,0 +1,30 @@
+.products-offer-img {
+  width: 100%;
+  height: 350px;
+}
+ul.products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.products li.product {
+  flex: 1 1 calc(25% - 1.5rem);
+  box-sizing: border-box;
+}
+
+@media (max-width: 992px) {
+  ul.products li.product {
+    flex: 1 1 calc(50% - 1.5rem);
+  }
+}
+
+@media (max-width: 576px) {
+  ul.products li.product {
+    flex: 1 1 100%;
+  }
+}
+
