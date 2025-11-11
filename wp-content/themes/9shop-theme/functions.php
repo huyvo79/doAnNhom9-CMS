@@ -1,12 +1,14 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Ngăn truy cập trực tiếp
+if (!defined('ABSPATH'))
+    exit; // Ngăn truy cập trực tiếp
 
 /**
  * ==============================
  * 1. Thiết lập theme cơ bản
  * ==============================
  */
-function myshop_theme_setup() {
+function myshop_theme_setup()
+{
 
     // Tự động quản lý <title> trong <head>
     add_theme_support('title-tag');
@@ -19,9 +21,9 @@ function myshop_theme_setup() {
 
     // Hỗ trợ logo tùy chỉnh
     add_theme_support('custom-logo', [
-        'height'      => 60,
-        'width'       => 200,
-        'flex-width'  => true,
+        'height' => 60,
+        'width' => 200,
+        'flex-width' => true,
         'flex-height' => true,
     ]);
 
@@ -54,7 +56,8 @@ add_action('after_setup_theme', 'myshop_theme_setup');
  * 2. Gọi CSS & JS cho theme
  * ==============================
  */
-function myshop_enqueue_assets() {
+function myshop_enqueue_assets()
+{
     // --- CSS ---
     wp_enqueue_style('bootstrap', get_template_directory_uri() . '/assets/css/bootstrap.min.css', [], '5.3.0');
     wp_enqueue_style('animate', get_template_directory_uri() . '/assets/lib/animate/animate.min.css', [], null);
@@ -75,7 +78,8 @@ function myshop_enqueue_assets() {
 }
 add_action('wp_enqueue_scripts', 'myshop_enqueue_assets');
 
-function my_custom_styles() {
+function my_custom_styles()
+{
     wp_enqueue_style('custom-style', get_template_directory_uri() . '/assets/css/custom.css');
 }
 add_action('wp_enqueue_scripts', 'my_custom_styles');
@@ -87,7 +91,8 @@ add_action('wp_enqueue_scripts', 'my_custom_styles');
  * 3. Customizer (Logo / Header)
  * ==============================
  */
-function myshop_customize_register($wp_customize){
+function myshop_customize_register($wp_customize)
+{
 
     // Tạo section Header
     $wp_customize->add_section('myshop_header', [
@@ -98,14 +103,31 @@ function myshop_customize_register($wp_customize){
     // Thêm setting và control cho logo
     $wp_customize->add_setting('myshop_logo');
     $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'myshop_logo', [
-        'label'    => __('Logo', 'myshop'),
-        'section'  => 'myshop_header',
+        'label' => __('Logo', 'myshop'),
+        'section' => 'myshop_header',
         'settings' => 'myshop_logo',
     ]));
 }
 add_action('customize_register', 'myshop_customize_register');
 
-
+/**
+ * ==============================
+ * 4. Đăng ký Sidebar cho Shop
+ * ==============================
+ */
+function myshop_widgets_init()
+{
+    register_sidebar([
+        'name' => __('Shop Sidebar', 'myshop'),
+        'id' => 'shop-sidebar',
+        'description' => __('Widget area for shop and product pages.', 'myshop'),
+        'before_widget' => '<div id="%1$s" class="widget %2$s mb-4">',
+        'after_widget' => '</div>',
+        'before_title' => '<h4 class="mb-3">',
+        'after_title' => '</h4>',
+    ]);
+}
+add_action('widgets_init', 'myshop_widgets_init');
 
 
 
