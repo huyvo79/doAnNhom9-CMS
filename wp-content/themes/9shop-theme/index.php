@@ -6,6 +6,7 @@
 <?php get_template_part('template-parts/products-offer'); ?>
 <?php get_template_part('template-parts/our-products'); ?>
 <?php get_template_part('template-parts/all-product-items'); ?>
+<?php get_template_part('template-parts/bestSeller'); ?>
 
 </main>
 
