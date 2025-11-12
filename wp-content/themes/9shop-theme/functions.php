@@ -65,6 +65,7 @@ function myshop_enqueue_assets()
     wp_enqueue_style('owltheme', get_template_directory_uri() . '/assets/lib/owlcarousel/assets/owl.theme.default.min.css', [], null);
     wp_enqueue_style('myshop-style', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
     wp_enqueue_style('main-style', get_template_directory_uri() . '/assets/css/style.css', ['bootstrap'], null);
+    wp_enqueue_style('woocommerce-custom', get_template_directory_uri() . '/assets/css/woocommerce-custom.css', ['woocommerce-general'], null);
 
     // --- JS ---
     wp_enqueue_script('jquery');
@@ -129,5 +130,75 @@ function myshop_widgets_init()
 }
 add_action('widgets_init', 'myshop_widgets_init');
 
+add_action('wp_footer', 'my_custom_quantity_buttons_script');
+function my_custom_quantity_buttons_script()
+{
+    // Chỉ chạy trên trang sản phẩm hoặc trang giỏ hàng
+    if (!is_product() && !is_cart()) {
+        return;
+    }
+    ?>
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
 
+            // Xử lý chung cho cả hai nút
+            function handle_quantity_change($button, $input, direction) {
+                var value = parseInt($input.val(), 10);
+                var step = parseInt($input.attr('step'), 10) || 1;
+                var min = parseInt($input.attr('min'), 10) || 0;
+                var max_attr = $input.attr('max');
+                var max = (max_attr !== '' && max_attr !== undefined) ? parseInt(max_attr, 10) : Infinity;
 
+                if (direction === 'plus') {
+                    if (value + step <= max) {
+                        $input.val(value + step).trigger('change');
+                    }
+                } else if (direction === 'minus') {
+                    if (value - step >= min) {
+                        $input.val(value - step).trigger('change');
+                    }
+                }
+            }
+
+            // Click nút Plus
+            $(document).on('click', '.btn-plus', function (e) {
+                e.preventDefault();
+                var $input = $(this).closest('.quantity').find('.qty');
+                handle_quantity_change($(this), $input, 'plus');
+            });
+
+            // Click nút Minus
+            $(document).on('click', '.btn-minus', function (e) {
+                e.preventDefault();
+                var $input = $(this).closest('.quantity').find('.qty');
+                handle_quantity_change($(this), $input, 'minus');
+            });
+
+        });
+    </script>
+    <?php
+}
+
+add_filter( 'woocommerce_loop_add_to_cart_link', 'my_custom_loop_add_to_cart_link', 10, 3 );
+function my_custom_loop_add_to_cart_link( $html, $product, $args ) {
+	
+	// Lấy tất cả các lớp (class) bạn cung cấp
+	$custom_classes = 'btn btn-primary border border-secondary rounded-pill px-4 py-2 mb-4 text-primary';
+	
+	// Icon của bạn
+	$icon = '<i class="fa fa-shopping-bag me-2 text-white"></i> ';
+
+	// Tạo lại thẻ <a> với các thuộc tính và lớp (class) của bạn
+	$html = sprintf(
+		'<a href="%s" data-quantity="%s" class="%s %s" %s>%s%s</a>',
+		esc_url( $product->add_to_cart_url() ),
+		esc_attr( isset( $args['quantity'] ) ? $args['quantity'] : 1 ),
+		esc_attr( isset( $args['class'] ) ? $args['class'] : 'button' ), // Giữ lại các lớp (class) mặc định (quan trọng cho AJAX)
+		esc_attr( $custom_classes ), // Thêm các lớp (class) của bạn
+		isset( $args['attributes'] ) ? wc_implode_html_attributes( $args['attributes'] ) : '',
+		$icon, // Thêm icon
+		esc_html( $product->add_to_cart_text() ) // Lấy text (ví dụ: "Add to cart", "Read more")
+	);
+
+	return $html;
+}

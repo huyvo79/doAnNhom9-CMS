@@ -1,0 +1,37 @@
+.woocommerce div.product .single_add_to_cart_button.button.alt,
+.woocommerce div.product .single_add_to_cart_button,
+.woocommerce div.product form.cart .button {
+    background-color: #00b4ff !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 12px 28px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    border-radius: 50px !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 6px 18px rgba(3, 169, 244, 0.18) !important;
+    transition: all 0.3s ease !important;
+    display: inline-block !important;
+    min-width: 180px !important;
+    text-align: center !important;
+}
+
+.woocommerce div.product .single_add_to_cart_button.button.alt:hover,
+.woocommerce div.product .single_add_to_cart_button:hover,
+.woocommerce div.product form.cart .button:hover {
+    background-color: #00a3e6 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 24px rgba(3, 169, 244, 0.22) !important;
+}
+
+.woocommerce div.product form.cart .quantity {
+    display: inline-block !important;
+    margin-right: 10px !important;
+}
+
+.woocommerce div.product form.cart .quantity input.qty {
+    padding: 8px 12px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    width: 80px !important;
+}
