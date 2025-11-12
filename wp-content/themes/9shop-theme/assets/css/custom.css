@@ -28,3 +28,7 @@ ul.products li.product {
   }
 }
 
+.our-products{
+  display: flex;
+  flex-direction: row;
+}
