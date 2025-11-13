@@ -363,6 +363,8 @@
 
 .product .product-item .product-item-inner img {
     transition: 0.5s;
+    width: 350px;
+    height: 390px;
 }
 
 .product .product-item:hover .product-item-inner img {
@@ -519,6 +521,8 @@
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     transition: 0.5s;
+    width: 170px !important; 
+    height: 217px !important;
 }
 
 .products .products-mini .products-mini-item:hover .products-mini-img img {
