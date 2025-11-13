@@ -179,26 +179,95 @@ function my_custom_quantity_buttons_script()
     <?php
 }
 
-add_filter( 'woocommerce_loop_add_to_cart_link', 'my_custom_loop_add_to_cart_link', 10, 3 );
-function my_custom_loop_add_to_cart_link( $html, $product, $args ) {
-	
-	// Lấy tất cả các lớp (class) bạn cung cấp
-	$custom_classes = 'btn btn-primary border border-secondary rounded-pill px-4 py-2 mb-4 text-primary';
-	
-	// Icon của bạn
-	$icon = '<i class="fa fa-shopping-bag me-2 text-white"></i> ';
+add_filter('woocommerce_loop_add_to_cart_link', 'my_custom_loop_add_to_cart_link', 10, 3);
+function my_custom_loop_add_to_cart_link($html, $product, $args)
+{
 
-	// Tạo lại thẻ <a> với các thuộc tính và lớp (class) của bạn
-	$html = sprintf(
-		'<a href="%s" data-quantity="%s" class="%s %s" %s>%s%s</a>',
-		esc_url( $product->add_to_cart_url() ),
-		esc_attr( isset( $args['quantity'] ) ? $args['quantity'] : 1 ),
-		esc_attr( isset( $args['class'] ) ? $args['class'] : 'button' ), // Giữ lại các lớp (class) mặc định (quan trọng cho AJAX)
-		esc_attr( $custom_classes ), // Thêm các lớp (class) của bạn
-		isset( $args['attributes'] ) ? wc_implode_html_attributes( $args['attributes'] ) : '',
-		$icon, // Thêm icon
-		esc_html( $product->add_to_cart_text() ) // Lấy text (ví dụ: "Add to cart", "Read more")
-	);
+    // Lấy tất cả các lớp (class) bạn cung cấp
+    $custom_classes = 'btn btn-primary border border-secondary rounded-pill px-4 py-2 mb-4 text-primary';
 
-	return $html;
+    // Icon của bạn
+    $icon = '<i class="fa fa-shopping-bag me-2 text-white"></i> ';
+
+    // Tạo lại thẻ <a> với các thuộc tính và lớp (class) của bạn
+    $html = sprintf(
+        '<a href="%s" data-quantity="%s" class="%s %s" %s>%s%s</a>',
+        esc_url($product->add_to_cart_url()),
+        esc_attr(isset($args['quantity']) ? $args['quantity'] : 1),
+        esc_attr(isset($args['class']) ? $args['class'] : 'button'), // Giữ lại các lớp (class) mặc định (quan trọng cho AJAX)
+        esc_attr($custom_classes), // Thêm các lớp (class) của bạn
+        isset($args['attributes']) ? wc_implode_html_attributes($args['attributes']) : '',
+        $icon, // Thêm icon
+        esc_html($product->add_to_cart_text()) // Lấy text (ví dụ: "Add to cart", "Read more")
+    );
+
+    return $html;
 }
+
+/**
+ * Gộp tab "Additional Information" vào chung tab "Description".
+ * PHIÊN BẢN SỬA LỖI LẶP TIÊU ĐỀ
+ */
+add_filter('woocommerce_product_tabs', 'merge_description_and_additional_info', 99);
+
+function merge_description_and_additional_info($tabs)
+{
+
+    // Kiểm tra xem cả hai tab có tồn tại không
+    if (isset($tabs['description']) && isset($tabs['additional_information'])) {
+
+        // 1. Gán hàm callback mới (hàm đã sửa lỗi)
+        $tabs['description']['callback'] = 'display_merged_tab_content_fixed';
+
+        // 2. Xóa tab 'additional_information' khỏi thanh điều hướng
+        unset($tabs['additional_information']);
+    }
+
+    return $tabs;
+}
+
+/**
+ * Hàm callback mới đã sửa lỗi.
+ * Hàm này chỉ hiển thị NỘI DUNG của tab, không hiển thị tiêu đề H2 bị trùng.
+ */
+/**
+ * Hàm callback mới đã sửa lỗi.
+ * (Bản sửa này thêm lại H2 cho Description để đồng bộ)
+ */
+function display_merged_tab_content_fixed()
+{
+    global $product;
+
+    if (!$product) {
+        return;
+    }
+
+    // 1. THÊM LẠI: Tiêu đề "Description"
+    echo '<h2>' . esc_html__('Description', 'woocommerce') . '</h2>';
+
+    // 2. Hiển thị nội dung "Description"
+    $description = $product->get_description();
+    if (empty($description)) {
+        // Nếu không có mô tả dài, lấy mô tả ngắn
+        $description = $product->get_short_description();
+    }
+
+    if ($description) {
+        // Dùng wpautop để giữ định dạng
+        echo wp_kses_post(wpautop($description));
+    }
+
+    // 3. Hiển thị tiêu đề "Additional Information"
+    // (Thêm class mt-4 để tạo khoảng cách)
+    echo '<h2 class="mt-4">' . esc_html__('Additional information', 'woocommerce') . '</h2>';
+
+    // 4. Hiển thị bảng nội dung "Additional Information"
+    do_action('woocommerce_product_additional_information', $product);
+}
+
+function enqueue_fontawesome_icons()
+{
+    wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+}
+add_action('wp_enqueue_scripts', 'enqueue_fontawesome_icons');
+

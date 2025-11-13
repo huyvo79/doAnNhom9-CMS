@@ -68,7 +68,71 @@ global $product;
                 <!-- Featured Products -->
                 <div class="featured-product mb-4">
                     <h4 class="mb-3">Featured Products</h4>
-                    <?php echo do_shortcode('[featured_products per_page="4" columns="1"]'); ?>
+
+                    <?php
+                    // Bắt đầu code mới: Truy vấn sản phẩm nổi bật
+                    $args = array(
+                        'post_type' => 'product',
+                        'posts_per_page' => 4, // Lấy 4 sản phẩm
+                        'tax_query' => array(
+                            array(
+                                'taxonomy' => 'product_visibility',
+                                'field' => 'name',
+                                'terms' => 'featured', // Chỉ lấy sản phẩm "nổi bật"
+                            ),
+                        ),
+                    );
+
+                    $featured_query = new WP_Query($args);
+
+                    if ($featured_query->have_posts()):
+                        // Tạo một danh sách UL với class riêng
+                        echo '<ul class="custom-featured-list">';
+
+                        while ($featured_query->have_posts()):
+                            $featured_query->the_post();
+                            global $product;
+
+                            // Lấy ảnh thumbnail
+                            $image_url = wp_get_attachment_image_src(get_post_thumbnail_id(), 'thumbnail')[0];
+                            if (!$image_url) {
+                                $image_url = wc_placeholder_img_src('thumbnail'); // Ảnh dự phòng
+                            }
+                            ?>
+
+                            <li class="product-list-item">
+                                <a href="<?php echo esc_url(get_permalink()); ?>" class="product-image-link">
+                                    <img src="<?php echo esc_url($image_url); ?>"
+                                        alt="<?php echo esc_attr(get_the_title()); ?>">
+                                </a>
+
+                                <div class="product-content">
+                                    <h5 class="product-title"><a
+                                            href="<?php echo esc_url(get_permalink()); ?>"><?php echo esc_html(get_the_title()); ?></a>
+                                    </h5>
+                                    <?php
+                                    // Hiển thị rating (nếu có)
+                                    if ($product->get_average_rating()) {
+                                        echo wc_get_rating_html($product->get_average_rating(), 0);
+                                    }
+                                    ?>
+                                    <span class="price"><?php echo $product->get_price_html(); ?></span>
+                                </div>
+                            </li>
+
+                            <?php
+                        endwhile;
+
+                        echo '</ul>';
+
+                    else:
+                        echo 'Không tìm thấy sản phẩm nổi bật nào.';
+                    endif;
+
+                    // Khôi phục lại dữ liệu post
+                    wp_reset_postdata();
+                    // Kết thúc code mới
+                    ?>
 
                     <div class="d-flex justify-content-center my-4">
                         <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>"
@@ -147,8 +211,8 @@ global $product;
                         <div class="d-flex flex-column mb-3">
                             <small>Product SKU: <?php echo $product->get_sku() ?: 'N/A'; ?></small>
                             <?php if ($product->is_in_stock()): ?>
-                                <small>Available: <strong
-                                        class="text-primary"><?php echo $product->get_stock_quantity() ?: 'In stock'; ?></strong></small>
+                                <small>Available: <strong class="text-primary"><?php echo $product->get_stock_quantity(); ?>
+                                        In stock</strong></small>
                             <?php else: ?>
                                 <small class="text-danger">Out of stock</small>
                             <?php endif; ?>
@@ -174,14 +238,6 @@ global $product;
 <!-- Single Product End -->
 
 <!-- Related Products -->
-<div class="container-fluid related-product py-5">
-    <div class="container">
-        <div class="mx-auto text-center pb-5" style="max-width: 700px;">
-            <h4 class="text-primary mb-4 border-bottom border-primary border-2 d-inline-block p-2">Related Products</h4>
-            <p>Discover similar items that complement your purchase.</p>
-        </div>
-        <?php woocommerce_output_related_products(); ?>
-    </div>
-</div>
+<?php get_template_part('template-parts/related-product-items'); ?>
 
 <?php get_footer(); ?>
