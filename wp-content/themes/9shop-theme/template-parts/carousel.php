@@ -24,7 +24,7 @@
                         ?>
                         <div class="row g-0 header-carousel-item align-items-center">
                             <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
-                                <img src="<?php echo esc_url($img); ?>" class="img-fluid w-100"
+                                <img src="<?php echo esc_url($img); ?>" class="image-in-caousel"
                                     alt="<?php echo esc_attr($title); ?>">
                             </div>
                             <div class="col-xl-6 carousel-content p-4">
