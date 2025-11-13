@@ -218,10 +218,6 @@ global $product;
                             <?php endif; ?>
                         </div>
 
-                        <div class="mb-4">
-                            <?php the_content(); ?>
-                        </div>
-
                         <?php woocommerce_template_single_add_to_cart(); ?>
                     </div>
 
