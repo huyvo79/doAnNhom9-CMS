@@ -1,37 +1,82 @@
-.woocommerce div.product .single_add_to_cart_button.button.alt,
-.woocommerce div.product .single_add_to_cart_button,
-.woocommerce div.product form.cart .button {
-    background-color: #00b4ff !important;
-    color: #fff !important;
-    border: none !important;
-    padding: 12px 28px !important;
+/* Custom style cho nút Add to cart - Cập nhật icon giỏ hàng và margin-top */
+
+/* 1. Style tổng thể cho nút */
+.single_add_to_cart_button,
+.single_add_to_cart_button.button,
+.woocommerce div.product form.cart .single_add_to_cart_button {
+    background-color: #FF8C00 !important;
+    /* Màu cam giống hình */
+    color: #ffffff !important;
+    /* Chữ trắng */
+    border: 0 !important;
+    /* Không viền */
+    padding: 12px 24px !important;
+    /* Padding */
     font-size: 1rem !important;
     font-weight: 600 !important;
     border-radius: 50px !important;
-    text-transform: uppercase !important;
-    box-shadow: 0 6px 18px rgba(3, 169, 244, 0.18) !important;
-    transition: all 0.3s ease !important;
-    display: inline-block !important;
-    min-width: 180px !important;
+    /* Bo góc tròn */
+    text-transform: none !important;
+    /* Bỏ uppercase để thành "Add to cart" */
+    box-shadow: none !important;
+    /* Bỏ shadow để nút phẳng */
+    transition: background-color .2s ease !important;
+    /* Transition đơn giản */
+    display: inline-flex !important;
+    /* Dùng flex để căn icon và text */
+    align-items: center !important;
+    /* Căn giữa theo chiều dọc */
+    justify-content: center !important;
+    /* Căn giữa theo chiều ngang */
+    min-width: auto !important;
+    /* Để nút tự co giãn */
     text-align: center !important;
+    cursor: pointer !important;
+    margin-top: 20px !important;
+    /* Thêm margin-top 20px */
 }
 
-.woocommerce div.product .single_add_to_cart_button.button.alt:hover,
-.woocommerce div.product .single_add_to_cart_button:hover,
-.woocommerce div.product form.cart .button:hover {
-    background-color: #00a3e6 !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 10px 24px rgba(3, 169, 244, 0.22) !important;
+/* 2. Thêm icon giỏ hàng (giả sử theme có Font Awesome) */
+.single_add_to_cart_button::before {
+    content: '\f07a';
+    /* Mã icon "shopping-cart" của Font Awesome */
+    font-family: 'Font Awesome 5 Free';
+    /* Tên font, có thể là 'FontAwesome' tùy theme */
+    font-weight: 900;
+    /* Bắt buộc cho Font Awesome 5/6 (Solid) */
+    margin-right: 8px;
+    /* Khoảng cách giữa icon và chữ */
+    font-size: 0.9em;
+    /* Cho icon nhỏ hơn chữ một chút */
+    line-height: 1;
 }
 
-.woocommerce div.product form.cart .quantity {
-    display: inline-block !important;
-    margin-right: 10px !important;
+/* 3. Hiệu ứng Hover/focus đơn giản */
+.single_add_to_cart_button:hover,
+.single_add_to_cart_button:focus {
+    background-color: #E67E22 !important;
+    /* Màu cam đậm hơn khi hover */
+    color: #ffffff !important;
+    transform: none !important;
+    /* Bỏ hiệu ứng transform */
+    box-shadow: none !important;
+    /* Bỏ shadow */
 }
 
+/* Responsive: full width on small screens */
+@media (max-width: 576px) {
+    .single_add_to_cart_button {
+        display: block !important;
+        width: 100% !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+/* Kèm sửa quantity appearance nếu cần */
 .woocommerce div.product form.cart .quantity input.qty {
-    padding: 8px 12px !important;
-    border: 1px solid #ddd !important;
-    border-radius: 8px !important;
     width: 80px !important;
+    padding: .5rem .75rem !important;
+    border-radius: 8px !important;
+    border: 1px solid #e6e6e6 !important;
 }

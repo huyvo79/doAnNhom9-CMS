@@ -96,7 +96,7 @@
         autoplay: true,
         smartSpeed: 1500,
         dots: true,
-        dotsData: true,
+        dotsData: false,
         loop: true,
         items: 1,
         nav : true,
