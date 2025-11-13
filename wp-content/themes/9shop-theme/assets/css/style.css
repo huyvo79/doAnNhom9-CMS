@@ -1080,3 +1080,69 @@
     font-weight: 600;
     color: #000;
 }
+
+/**
+ * 1. Định dạng thanh chứa (ul) giống .nav-tabs
+ * Đây là thanh vạch xám nằm ngang bên dưới các tab.
+ */
+.woocommerce-tabs ul.wc-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    /* Bỏ dấu chấm đầu dòng */
+    padding-left: 0;
+
+    /* Vạch ngang bên dưới giống .nav-tabs */
+    border-bottom: 1px solid #dee2e6;
+    /* Màu viền xám mặc định của Bootstrap */
+    margin-bottom: 1rem;
+    /* Giống class mb-3 của Bootstrap */
+}
+
+/**
+ * 2. Xóa bỏ tất cả định dạng mặc định của WooCommerce
+ */
+.woocommerce-tabs ul.wc-tabs li {
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    /* Xóa margin-bottom: -1px nếu có */
+}
+
+/**
+ * 3. Định dạng các link (a) giống .nav-link
+ * Đây là các nút "Description" và "Reviews".
+ */
+.woocommerce-tabs ul.wc-tabs li a {
+    display: block;
+    padding: 0.5rem 1rem;
+    /* Kích thước padding chuẩn của .nav-link */
+    text-decoration: none;
+
+    /* Áp dụng style từ code Bootstrap của bạn */
+    border: 1px solid white;
+    /* Giống .border-white */
+    border-bottom: none !important;
+    /* Giống .border-bottom-0 */
+
+    /* Màu chữ cho tab KHÔNG active */
+    color: #495057;
+}
+
+/**
+ * 4. Định dạng tab đang ACTIVE (giống .nav-link.active)
+ */
+.woocommerce-tabs ul.wc-tabs li.active a {
+    color: #fda50d;
+
+    font-weight: 500;
+}
+
+/**
+ * 5. Định dạng khi rê chuột (hover)
+ */
+.woocommerce-tabs ul.wc-tabs li:not(.active) a:hover {
+    color: #fda50d;
+
+}
