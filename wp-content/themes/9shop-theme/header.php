@@ -103,7 +103,7 @@
                 <div class="d-inline-flex align-items-center">
                     <a href="" class="navbar-brand p-0">
                         <h1 class="display-5 text-primary m-0"><i
-                                class="fas fa-shopping-bag text-secondary me-2"></i>Electro</h1>
+                                class="fas fa-shopping-bag text-secondary me-2"></i>9Shop</h1>
                         <!-- <img src="img/logo.png" alt="Logo"> -->
                     </a>
                 </div>
@@ -131,7 +131,7 @@
                             class="rounded-circle btn-md-square border"><i class="fas fa-random"></i></i></a>
                     <a href="#" class="text-muted d-flex align-items-center justify-content-center me-3"><span
                             class="rounded-circle btn-md-square border"><i class="fas fa-heart"></i></a>
-                    <a href="#" class="text-muted d-flex align-items-center justify-content-center"><span
+                    <a href="<?php echo wc_get_cart_url(); ?>" class="text-muted d-flex align-items-center justify-content-center"><span
                             class="rounded-circle btn-md-square border"><i class="fas fa-shopping-cart"></i></span>
                         <span class="text-dark ms-2">$0.00</span></a>
                 </div>
