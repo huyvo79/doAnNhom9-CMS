@@ -271,3 +271,4 @@ function enqueue_fontawesome_icons()
 }
 add_action('wp_enqueue_scripts', 'enqueue_fontawesome_icons');
 
+
