@@ -11,7 +11,7 @@
                         </div>
                         <div>
                             <h4 class="text-white">Address</h4>
-                            <p class="mb-2">123 Street New York.USA</p>
+                            <p class="mb-2">123 Street Ho Chi Minh city, Vietnam</p>
                         </div>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
                         </div>
                         <div>
                             <h4 class="text-white">Mail Us</h4>
-                            <p class="mb-2">info@example.com</p>
+                            <p class="mb-2">admin@gmail.com</p>
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                         </div>
                         <div>
                             <h4 class="text-white">Telephone</h4>
-                            <p class="mb-2">(+012) 3456 7890</p>
+                            <p class="mb-2">(+84) 3456 7890</p>
                         </div>
                     </div>
                 </div>
@@ -46,8 +46,9 @@
                             <i class="fab fa-firefox-browser fa-2x text-primary"></i>
                         </div>
                         <div>
-                            <h4 class="text-white">Yoursite@ex.com</h4>
-                            <p class="mb-2">(+012) 3456 7890</p>
+                            <h4 class="text-white">www.9shop.com</h4>
+                            <p class="mb-2">www.9shop.com</h4>
+                            <p class="mb-2">(+84) 3456 7890</p>
                         </div>
                     </div>
                 </div>

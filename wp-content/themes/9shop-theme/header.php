@@ -57,7 +57,7 @@
             </div>
             <div class="col-lg-4 text-center d-flex align-items-center justify-content-center">
                 <small class="text-dark">Call Us:</small>
-                <a href="#" class="text-muted">(+012) 1234 567890</a>
+                <a href="#" class="text-muted">(+84) 1234 567890</a>
             </div>
 
             <div class="col-lg-4 text-center text-lg-end">
@@ -252,7 +252,7 @@
                             </div>
                         </div>
                         <a href="" class="btn btn-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0"><i
-                                class="fa fa-mobile-alt me-2"></i> +0123 456 7890</a>
+                                class="fa fa-mobile-alt me-2"></i> +84 123 456 7890</a>
                     </div>
                 </nav>
             </div>
