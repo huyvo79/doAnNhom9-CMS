@@ -201,7 +201,7 @@
                     <div class="collapse navbar-collapse" id="navbarCollapse">
                         <div class="navbar-nav ms-auto py-0">
                             <a href="index.html" class="nav-item nav-link active">Home</a>
-                            <a href="shop.html" class="nav-item nav-link">Shop</a>
+                            <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) ); ?>" class="nav-item nav-link">Shop</a>
                             <a href="single.html" class="nav-item nav-link">Single Page</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
