@@ -521,7 +521,7 @@
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     transition: 0.5s;
-    width: 170px !important; 
+    width: 170px !important;
     height: 217px !important;
 }
 
@@ -946,44 +946,51 @@
     display: block;
 }
 
-/* Ẩn văn bản gốc và tạo không gian cho icon */
+/* Ẩn các text số 1, 2, 3, 4, 5 mặc định */
 .woocommerce-Reviews .comment-form-rating .stars a {
     text-indent: -9999px;
-    overflow: hidden;
     display: inline-block;
     width: 1.8em;
     height: 1.8em;
     position: relative;
     line-height: 1.8em;
     vertical-align: middle;
+    cursor: pointer;
+    margin-right: 5px;
+    /* Khoảng cách giữa các sao */
 }
 
-/* Tạo icon sao mặc định (sao rỗng) */
+/* CẤU HÌNH SAO RỖNG (Mặc định) */
 .woocommerce-Reviews .comment-form-rating .stars a::before {
     content: '\f005' !important;
-    /* Mã icon sao */
+    /* Icon sao */
     font-family: "Font Awesome 6 Free", "FontAwesome" !important;
     font-weight: 400 !important;
-    /* 400 = Regular (viền) */
+    /* 400 = Regular (Rỗng) */
     font-size: 1.5rem !important;
     color: #ccc !important;
+    /* Màu xám khi chưa chọn */
     position: absolute !important;
     left: 0 !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     text-indent: 0 !important;
-    transition: color 0.2s ease, font-weight 0.2s ease !important;
+    transition: color 0.2s ease, transform 0.2s ease !important;
 }
 
-/* Hiệu ứng khi hover (di chuột qua) */
-.woocommerce-Reviews .comment-form-rating .stars a:hover::before,
-.woocommerce-Reviews .comment-form-rating .stars a.active::before {
+/* CẤU HÌNH SAO ĐẶC (Khi Hover hoặc đã Active) 
+   Logic: Class .active được JS thêm vào khi click, 
+   Class .hover-highlight được JS thêm vào khi rê chuột
+*/
+.woocommerce-Reviews .comment-form-rating .stars a.active::before,
+.woocommerce-Reviews .comment-form-rating .stars a.hover-highlight::before {
     font-weight: 900 !important;
-    /* 900 = Solid (đặc) */
+    /* 900 = Solid (Đặc) */
     color: #FFD700 !important;
     /* Màu vàng */
+    transform: translateY(-50%) scale(1.1) !important;
+    /* Phóng to nhẹ khi chọn */
 }
-
 
 /* 6. STYLE Ô NHẬP LIỆU (TEXTAREA) */
 .woocommerce-Reviews #comment {
@@ -1144,5 +1151,4 @@
  */
 .woocommerce-tabs ul.wc-tabs li:not(.active) a:hover {
     color: #fda50d;
-
 }
