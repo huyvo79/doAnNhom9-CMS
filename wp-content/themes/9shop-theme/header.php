@@ -88,11 +88,7 @@
             </div>
             <div class="col-md-4 col-lg-6 text-center">
                 <div class="position-relative ps-4">
-                    <form role="search" method="get" class="d-flex border rounded-pill" action="<?php echo esc_url( home_url( '/' ) ); ?>">
-                        <input type="hidden" name="post_type" value="product" />
-                        <input class="form-control border-0 rounded-pill w-100 py-3" type="text" name="s" placeholder="Tìm kiếm sản phẩm...">
-                        <button type="submit" class="btn btn-primary rounded-pill py-3 px-5" style="border: 0;"><i class="fas fa-search"></i></button>
-                    </form>
+                    <?php echo do_shortcode('[aws_search_form]'); ?>
                 </div>
             </div>
             <div class="col-md-4 col-lg-3 text-center text-lg-end">
