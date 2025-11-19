@@ -4,174 +4,160 @@ Template Name: Trang Đơn Hàng
 */
 
 get_header();  
+
+// Thiết lập phân trang
+$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+$posts_per_page = 10; // Số đơn hàng trên 1 trang
 ?>
 
 <div class="container-fluid page-header py-5">
     <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s"><?php the_title(); ?></h1>
     <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
         <li class="breadcrumb-item"><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">Pages</a></li>
-        <li class="breadcrumb-item active text-white"><?php the_title(); ?></li>
+        <li class="breadcrumb-item active text-white">Lịch sử đơn hàng</li>
     </ol>
 </div>
 
 <div class="container-fluid py-5">
     <div class="container py-5">
         <?php
-        // Kiểm tra xem user đã đăng nhập chưa
         if ( ! is_user_logged_in() ) {
-            echo '<div class="alert alert-warning text-center">';
-            echo '<p class="mb-3">Bạn cần đăng nhập để xem đơn hàng của mình.</p>';
-            echo '<a href="' . esc_url( wc_get_page_permalink( 'myaccount' ) ) . '" class="btn btn-primary rounded-pill px-4">Đăng Nhập</a>';
-            echo '</div>';
+            ?>
+            <div class="text-center py-5">
+                <i class="fas fa-user-lock fa-4x text-warning mb-4"></i>
+                <h3>Bạn chưa đăng nhập</h3>
+                <p class="mb-4">Vui lòng đăng nhập để xem lịch sử đơn hàng của bạn.</p>
+                <a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" class="btn btn-primary rounded-pill px-5 py-3">Đăng Nhập / Đăng Ký</a>
+            </div>
+            <?php
         } else {
-            $current_user = wp_get_current_user();
-            $customer_orders = wc_get_orders( array(
-                'customer' => get_current_user_id(),
-                'limit'    => -1, // Lấy tất cả đơn hàng
-            ) );
+            $customer_id = get_current_user_id();
             
+            // Lấy danh sách đơn hàng với phân trang
+            $args = array(
+                'customer_id' => $customer_id,
+                'limit'       => $posts_per_page,
+                'page'        => $paged,
+                'paginate'    => true, // Bật chế độ trả về object phân trang
+            );
+            
+            $orders_data = wc_get_orders( $args );
+            
+            // wc_get_orders với paginate=true trả về object (orders, total, max_num_pages)
+            $customer_orders = $orders_data->orders;
+            $total_pages     = $orders_data->max_num_pages;
+
             if ( empty( $customer_orders ) ) {
-                echo '<div class="text-center">';
-                echo '<i class="fas fa-shopping-bag fa-4x text-muted mb-4"></i>';
-                echo '<h4 class="text-muted mb-3">Chưa có đơn hàng nào</h4>';
-                echo '<p class="text-muted mb-4">Hãy bắt đầu mua sắm để xem đơn hàng tại đây!</p>';
-                echo '<a href="' . esc_url( wc_get_page_permalink( 'shop' ) ) . '" class="btn btn-primary rounded-pill px-4">Mua Sắm Ngay</a>';
-                echo '</div>';
+                ?>
+                <div class="text-center py-5 bg-light rounded">
+                    <i class="fas fa-box-open fa-4x text-muted mb-4"></i>
+                    <h4 class="text-muted mb-3">Bạn chưa có đơn hàng nào</h4>
+                    <p class="text-muted mb-4">Hãy bắt đầu mua sắm để xem đơn hàng tại đây!</p>
+                    <a href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>" class="btn btn-primary rounded-pill px-5 py-3">Mua Sắm Ngay</a>
+                </div>
+                <?php
             } else {
                 ?>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead class="table-primary">
-                            <tr>
-                                <th scope="col">Mã Đơn Hàng</th>
-                                <th scope="col">Ngày Đặt</th>
-                                <th scope="col">Sản Phẩm</th>
-                                <th scope="col">Tổng Tiền</th>
-                                <th scope="col">Trạng Thái</th>
-                                <th scope="col">Hành Động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            foreach ( $customer_orders as $order ) {
-                                $order_id = $order->get_id();
-                                $order_date = $order->get_date_created()->format('d/m/Y');
-                                $order_total = $order->get_formatted_order_total();
-                                $order_status = wc_get_order_status_name( $order->get_status() );
-                                $order_items = $order->get_items();
-                                ?>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="mb-0 text-primary"><i class="fas fa-list-alt me-2"></i>Danh sách đơn hàng</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
                                 <tr>
-                                    <td>
-                                        <strong>#<?php echo esc_html( $order_id ); ?></strong>
-                                    </td>
-                                    <td><?php echo esc_html( $order_date ); ?></td>
-                                    <td>
-                                        <?php
-                                        $product_count = 0;
-                                        foreach ( $order_items as $item ) {
-                                            $product_count++;
-                                            if ( $product_count <= 2 ) {
-                                                echo '<div class="mb-1">';
-                                                echo esc_html( $item->get_name() );
-                                                echo ' × ' . $item->get_quantity();
-                                                echo '</div>';
-                                            }
-                                        }
-                                        if ( count( $order_items ) > 2 ) {
-                                            echo '<small class="text-muted">+ ' . ( count( $order_items ) - 2 ) . ' sản phẩm khác</small>';
-                                        }
-                                        ?>
-                                    </td>
-                                    <td class="fw-bold text-primary"><?php echo $order_total; ?></td>
-                                    <td>
-                                        <?php
-                                        $status_class = '';
-                                        switch ( $order->get_status() ) {
-                                            case 'completed':
-                                                $status_class = 'badge bg-success';
-                                                break;
-                                            case 'processing':
-                                                $status_class = 'badge bg-primary';
-                                                break;
-                                            case 'on-hold':
-                                                $status_class = 'badge bg-warning';
-                                                break;
-                                            case 'cancelled':
-                                                $status_class = 'badge bg-danger';
-                                                break;
-                                            default:
-                                                $status_class = 'badge bg-secondary';
-                                        }
-                                        ?>
-                                        <span class="<?php echo $status_class; ?>"><?php echo esc_html( $order_status ); ?></span>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" 
-                                           class="btn btn-sm btn-outline-primary rounded-pill">
-                                            <i class="fas fa-eye me-1"></i> Xem
-                                        </a>
-                                    </td>
+                                    <th scope="col" class="py-3 ps-4">Mã Đơn</th>
+                                    <th scope="col" class="py-3">Ngày Đặt</th>
+                                    <th scope="col" class="py-3">Sản Phẩm</th>
+                                    <th scope="col" class="py-3">Tổng Tiền</th>
+                                    <th scope="col" class="py-3">Trạng Thái</th>
+                                    <th scope="col" class="py-3 text-end pe-4">Chi tiết</th>
                                 </tr>
+                            </thead>
+                            <tbody>
                                 <?php
-                            }
+                                foreach ( $customer_orders as $order ) {
+                                    $order_id = $order->get_id();
+                                    $order_date = $order->get_date_created()->format('d/m/Y H:i');
+                                    $order_total = $order->get_formatted_order_total();
+                                    $order_status = wc_get_order_status_name( $order->get_status() );
+                                    $status_slug = $order->get_status();
+                                    $order_items = $order->get_items();
+                                    
+                                    // Class màu sắc cho badge trạng thái
+                                    $badge_class = 'bg-secondary';
+                                    if($status_slug == 'completed') $badge_class = 'bg-success';
+                                    if($status_slug == 'processing') $badge_class = 'bg-primary';
+                                    if($status_slug == 'on-hold') $badge_class = 'bg-warning text-dark';
+                                    if($status_slug == 'cancelled' || $status_slug == 'failed') $badge_class = 'bg-danger';
+                                    ?>
+                                    <tr>
+                                        <td class="ps-4">
+                                            <strong>#<?php echo esc_html( $order->get_order_number() ); ?></strong>
+                                        </td>
+                                        <td><?php echo esc_html( $order_date ); ?></td>
+                                        <td>
+                                            <?php
+                                            $product_names = array();
+                                            foreach ( $order_items as $item ) {
+                                                $product_names[] = $item->get_name() . ' x' . $item->get_quantity();
+                                            }
+                                            // Hiển thị 2 sản phẩm đầu, còn lại thu gọn
+                                            echo '<span class="d-block text-truncate" style="max-width: 250px;" title="' . implode(', ', $product_names) . '">';
+                                            echo implode(', ', $product_names);
+                                            echo '</span>';
+                                            ?>
+                                        </td>
+                                        <td class="fw-bold text-primary"><?php echo $order_total; ?></td>
+                                        <td>
+                                            <span class="badge rounded-pill <?php echo $badge_class; ?>"><?php echo esc_html( $order_status ); ?></span>
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" 
+                                               class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                Xem <i class="fas fa-arrow-right ms-1"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <?php if ( $total_pages > 1 ) : ?>
+                    <div class="d-flex justify-content-center mt-4">
+                        <nav aria-label="Page navigation">
+                            <?php
+                            echo paginate_links( array(
+                                'base'      => str_replace( 999999999, '%#%', esc_url( get_pagenum_link( 999999999 ) ) ),
+                                'format'    => '?paged=%#%',
+                                'current'   => max( 1, $paged ),
+                                'total'     => $total_pages,
+                                'type'      => 'list',
+                                'prev_text' => '<i class="fas fa-chevron-left"></i>',
+                                'next_text' => '<i class="fas fa-chevron-right"></i>',
+                                'mid_size'  => 2
+                            ) );
                             ?>
-                        </tbody>
-                    </table>
-                </div>
+                        </nav>
+                        <style>
+                            .page-numbers { display: flex; list-style: none; padding: 0; }
+                            .page-numbers li { margin: 0 3px; }
+                            .page-numbers li a, .page-numbers li span {
+                                display: block; padding: 8px 16px; border: 1px solid #dee2e6; 
+                                border-radius: 50px; color: #0d6efd; text-decoration: none;
+                            }
+                            .page-numbers li span.current {
+                                background-color: #0d6efd; color: white; border-color: #0d6efd;
+                            }
+                            .page-numbers li a:hover { background-color: #e9ecef; }
+                        </style>
+                    </div>
+                <?php endif; ?>
                 
-                <!-- Thống kê đơn hàng -->
-                <div class="row mt-5">
-                    <div class="col-md-3 col-6 text-center">
-                        <div class="border rounded p-4">
-                            <i class="fas fa-shopping-bag fa-2x text-primary mb-3"></i>
-                            <h4 class="text-primary"><?php echo count( $customer_orders ); ?></h4>
-                            <p class="mb-0">Tổng Đơn Hàng</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-6 text-center">
-                        <div class="border rounded p-4">
-                            <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
-                            <h4 class="text-success">
-                                <?php
-                                $completed_orders = array_filter( $customer_orders, function( $order ) {
-                                    return $order->get_status() === 'completed';
-                                } );
-                                echo count( $completed_orders );
-                                ?>
-                            </h4>
-                            <p class="mb-0">Đã Hoàn Thành</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-6 text-center">
-                        <div class="border rounded p-4">
-                            <i class="fas fa-sync-alt fa-2x text-warning mb-3"></i>
-                            <h4 class="text-warning">
-                                <?php
-                                $processing_orders = array_filter( $customer_orders, function( $order ) {
-                                    return $order->get_status() === 'processing';
-                                } );
-                                echo count( $processing_orders );
-                                ?>
-                            </h4>
-                            <p class="mb-0">Đang Xử Lý</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-6 text-center">
-                        <div class="border rounded p-4">
-                            <i class="fas fa-truck fa-2x text-info mb-3"></i>
-                            <h4 class="text-info">
-                                <?php
-                                $shipped_orders = array_filter( $customer_orders, function( $order ) {
-                                    return in_array( $order->get_status(), ['shipped', 'on-hold'] );
-                                } );
-                                echo count( $shipped_orders );
-                                ?>
-                            </h4>
-                            <p class="mb-0">Đang Giao</p>
-                        </div>
-                    </div>
-                </div>
                 <?php
             }
         }

@@ -85,6 +85,8 @@
                                     class="fa fa-home me-2"></i> My Dashboard</small></a>
                         <div class="dropdown-menu rounded">
                             <a href="#" class="dropdown-item"> Login</a>
+                            <a href="<?php echo wc_get_account_endpoint_url('orders'); ?>" class="dropdown-item"> My
+                                order</a>
                             <a href="#" class="dropdown-item"> Wishlist</a>
                             <a href="#" class="dropdown-item"> My Card</a>
                             <a href="#" class="dropdown-item"> Notifications</a>
@@ -131,9 +133,10 @@
                             class="rounded-circle btn-md-square border"><i class="fas fa-random"></i></i></a>
                     <a href="#" class="text-muted d-flex align-items-center justify-content-center me-3"><span
                             class="rounded-circle btn-md-square border"><i class="fas fa-heart"></i></a>
-                    <a href="<?php echo wc_get_cart_url(); ?>" class="text-muted d-flex align-items-center justify-content-center"><span
+                    <a href="<?php echo wc_get_cart_url(); ?>"
+                        class="text-muted d-flex align-items-center justify-content-center"><span
                             class="rounded-circle btn-md-square border"><i class="fas fa-shopping-cart"></i></span>
-                        <span class="text-dark ms-2">$0.00</span></a>
+                    </a>
                 </div>
             </div>
         </div>
@@ -201,7 +204,8 @@
                     <div class="collapse navbar-collapse" id="navbarCollapse">
                         <div class="navbar-nav ms-auto py-0">
                             <a href="index.html" class="nav-item nav-link active">Home</a>
-                            <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) ); ?>" class="nav-item nav-link">Shop</a>
+                            <a href="<?php echo get_permalink(wc_get_page_id('shop')); ?>"
+                                class="nav-item nav-link">Shop</a>
                             <a href="single.html" class="nav-item nav-link">Single Page</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
