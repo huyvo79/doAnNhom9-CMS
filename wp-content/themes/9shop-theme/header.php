@@ -166,6 +166,48 @@
                                     <a href="<?php echo wc_get_cart_url(); ?>" class="dropdown-item">Giỏ hàng (Cart)</a>
                                     <a href="<?php echo wc_get_checkout_url(); ?>" class="dropdown-item">Thanh toán (Checkout)</a>
                                     <a href="<?php echo get_permalink( get_option('woocommerce_myaccount_page_id') ); ?>" class="dropdown-item">Tài khoản</a>
+                                    <a href="bestseller.html" class="dropdown-item">Bestseller</a>
+                                    <a href="cart.html" class="dropdown-item">Cart Page</a>
+                                    <a href="cheackout.html" class="dropdown-item">Cheackout</a>
+                                    <a href="404.html" class="dropdown-item">404 Page</a>
+                                </div>
+                            </div>
+                            <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'contact-us' ) ) ); ?>" class="nav-item nav-link me-2">Contact</a>
+                            <div class="nav-item dropdown d-block d-lg-none mb-3">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">All Category</a>
+                                <div class="dropdown-menu m-0">
+                                    <ul class="list-unstyled categories-bars">
+                                        <li>
+                                            <div class="categories-bars-item">
+                                                <a href="#">Accessories</a>
+                                                <span>(3)</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="categories-bars-item">
+                                                <a href="#">Electronics & Computer</a>
+                                                <span>(5)</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="categories-bars-item">
+                                                <a href="#">Laptops & Desktops</a>
+                                                <span>(2)</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="categories-bars-item">
+                                                <a href="#">Mobiles & Tablets</a>
+                                                <span>(8)</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="categories-bars-item">
+                                                <a href="#">SmartPhone & Smart TV</a>
+                                                <span>(5)</span>
+                                            </div>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                             <a href="#" class="nav-item nav-link me-2">Contact</a>

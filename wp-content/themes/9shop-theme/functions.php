@@ -271,6 +271,31 @@ function enqueue_fontawesome_icons()
 }
 add_action('wp_enqueue_scripts', 'enqueue_fontawesome_icons');
 
+function custom_blog_sidebar()
+{
+    register_sidebar(array(
+        'name' => 'Blog Sidebar',
+        'id' => 'blog-sidebar',
+        'before_widget' => '<div class="widget blog-widget">',
+        'after_widget' => '</div>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>',
+    ));
+}
+add_action('widgets_init', 'custom_blog_sidebar');
+
+function custom_single_blog_styles() {
+    if (is_single() && 'post' === get_post_type()) {
+        wp_enqueue_style(
+            'single-blog-style',
+            get_template_directory_uri() . '/assets/css/single-blog.css',
+            array(),
+            '1.0'
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'custom_single_blog_styles');
+
 
 /**
  * template page-order
