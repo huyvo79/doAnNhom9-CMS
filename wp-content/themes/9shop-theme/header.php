@@ -74,22 +74,6 @@
                         </div>
                     </div>
                     </div>
-                    <div class="dropdown">
-                        <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown"><small><i
-                                    class="fa fa-home me-2"></i> My Dashboard</small></a>
-                        <div class="dropdown-menu rounded">
-                            <a href="#" class="dropdown-item"> Login</a>
-                            <a href="<?php echo wc_get_account_endpoint_url('orders'); ?>" class="dropdown-item"> My
-                                order</a>
-                            <a href="#" class="dropdown-item"> Wishlist</a>
-                            <a href="#" class="dropdown-item"> My Card</a>
-                            <a href="#" class="dropdown-item"> Notifications</a>
-                            <a href="#" class="dropdown-item"> Account Settings</a>
-                            <a href="#" class="dropdown-item"> My Account</a>
-                            <a href="#" class="dropdown-item"> Log Out</a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -115,13 +99,6 @@
                             <?php echo WC()->cart->get_cart_total(); ?> 
                             <small>(<?php echo WC()->cart->get_cart_contents_count(); ?>)</small>
                         </span>
-                    <a href="#" class="text-muted d-flex align-items-center justify-content-center me-3"><span
-                            class="rounded-circle btn-md-square border"><i class="fas fa-random"></i></i></a>
-                    <a href="#" class="text-muted d-flex align-items-center justify-content-center me-3"><span
-                            class="rounded-circle btn-md-square border"><i class="fas fa-heart"></i></a>
-                    <a href="<?php echo wc_get_cart_url(); ?>"
-                        class="text-muted d-flex align-items-center justify-content-center"><span
-                            class="rounded-circle btn-md-square border"><i class="fas fa-shopping-cart"></i></span>
                     </a>
                 </div>
             </div>
@@ -156,61 +133,15 @@
                             <a href="<?php echo home_url(); ?>" class="nav-item nav-link active">Home</a>
                             <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) ); ?>" class="nav-item nav-link">Shop</a>
                             
-                            <a href="index.html" class="nav-item nav-link active">Home</a>
-                            <a href="<?php echo get_permalink(wc_get_page_id('shop')); ?>"
-                                class="nav-item nav-link">Shop</a>
-                            <a href="single.html" class="nav-item nav-link">Single Page</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu m-0">
                                     <a href="<?php echo wc_get_cart_url(); ?>" class="dropdown-item">Giỏ hàng (Cart)</a>
                                     <a href="<?php echo wc_get_checkout_url(); ?>" class="dropdown-item">Thanh toán (Checkout)</a>
                                     <a href="<?php echo get_permalink( get_option('woocommerce_myaccount_page_id') ); ?>" class="dropdown-item">Tài khoản</a>
-                                    <a href="bestseller.html" class="dropdown-item">Bestseller</a>
-                                    <a href="cart.html" class="dropdown-item">Cart Page</a>
-                                    <a href="cheackout.html" class="dropdown-item">Cheackout</a>
-                                    <a href="404.html" class="dropdown-item">404 Page</a>
                                 </div>
                             </div>
                             <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'contact-us' ) ) ); ?>" class="nav-item nav-link me-2">Contact</a>
-                            <div class="nav-item dropdown d-block d-lg-none mb-3">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">All Category</a>
-                                <div class="dropdown-menu m-0">
-                                    <ul class="list-unstyled categories-bars">
-                                        <li>
-                                            <div class="categories-bars-item">
-                                                <a href="#">Accessories</a>
-                                                <span>(3)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="categories-bars-item">
-                                                <a href="#">Electronics & Computer</a>
-                                                <span>(5)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="categories-bars-item">
-                                                <a href="#">Laptops & Desktops</a>
-                                                <span>(2)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="categories-bars-item">
-                                                <a href="#">Mobiles & Tablets</a>
-                                                <span>(8)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="categories-bars-item">
-                                                <a href="#">SmartPhone & Smart TV</a>
-                                                <span>(5)</span>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <a href="#" class="nav-item nav-link me-2">Contact</a>
                         </div>
                         <div class="d-none d-lg-block">
                              <a href="#" class="btn btn-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0"><i class="fa fa-mobile-alt me-2"></i> +84 123 456 7890</a>
