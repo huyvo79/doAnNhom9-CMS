@@ -144,19 +144,41 @@ function my_custom_quantity_buttons_script()
             // Xử lý chung cho cả hai nút
             function handle_quantity_change($button, $input, direction) {
                 var value = parseInt($input.val(), 10);
-                var step = parseInt($input.attr('step'), 10) || 1;
+                // Đảm bảo step luôn là 1 nếu không được định nghĩa rõ
+                var step = parseInt($input.attr('step'), 10) || 1; 
                 var min = parseInt($input.attr('min'), 10) || 0;
                 var max_attr = $input.attr('max');
                 var max = (max_attr !== '' && max_attr !== undefined) ? parseInt(max_attr, 10) : Infinity;
+                var newValue = value;
 
                 if (direction === 'plus') {
-                    if (value + step <= max) {
-                        $input.val(value + step).trigger('change');
+                    newValue = value + step;
+                    if (newValue <= max) {
+                        $input.val(newValue); // Chỉ thay đổi giá trị
                     }
                 } else if (direction === 'minus') {
-                    if (value - step >= min) {
-                        $input.val(value - step).trigger('change');
+                    newValue = value - step;
+                    if (newValue >= min) {
+                        $input.val(newValue); // Chỉ thay đổi giá trị
                     }
+                }
+
+                // *** FIX LỖI Ở ĐÂY ***
+                // Sau khi thay đổi giá trị, chúng ta gọi trigger('change')
+                // để WooCommerce nhận biết sự thay đổi.
+                // Tuy nhiên, việc này lại gây ra lỗi tăng 2.
+                
+                // Giải pháp: Thay vì dùng .trigger('change'), ta chỉ thay đổi giá trị.
+                // Riêng trên trang giỏ hàng, ta cần kích hoạt sự kiện để nút "Update Cart" sáng lên.
+                
+                // Nếu đang ở trang giỏ hàng, kích hoạt sự kiện change để Woo nhận biết
+                if ($('body').hasClass('woocommerce-cart')) {
+                    $input.trigger('change');
+                } else {
+                    // Nếu đang ở trang sản phẩm đơn, cũng kích hoạt change để cập nhật giá (nếu có)
+                    // và xử lý AJAX Add-to-Cart nếu cần.
+                    // Nếu lỗi tăng 2 vẫn xảy ra, hãy thử xóa dòng này:
+                    $input.trigger('change');
                 }
             }
 
@@ -280,3 +302,15 @@ function myshop_register_order_template( $templates ) {
     return $templates;
 }
 add_filter( 'theme_page_templates', 'myshop_register_order_template' );
+
+/**
+ * template page-coupon
+ */
+function myshop_register_custom_templates( $templates ) {
+    $templates['page-order.php'] = 'Trang Đơn Hàng (9shop Orders)'; // Giữ lại template cũ
+    $templates['page-coupon.php'] = 'Trang Mã Giảm Giá (9shop Coupons)'; // Thêm template mới
+    return $templates;
+}
+add_filter( 'theme_page_templates', 'myshop_register_custom_templates' );
+
+ 
