@@ -141,7 +141,7 @@
                                     <a href="<?php echo get_permalink( get_option('woocommerce_myaccount_page_id') ); ?>" class="dropdown-item">Tài khoản</a>
                                 </div>
                             </div>
-                            <a href="#" class="nav-item nav-link me-2">Contact</a>
+                            <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'contact-us' ) ) ); ?>" class="nav-item nav-link me-2">Contact</a>
                         </div>
                         <div class="d-none d-lg-block">
                              <a href="#" class="btn btn-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0"><i class="fa fa-mobile-alt me-2"></i> +84 123 456 7890</a>
