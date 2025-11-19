@@ -272,3 +272,11 @@ function enqueue_fontawesome_icons()
 add_action('wp_enqueue_scripts', 'enqueue_fontawesome_icons');
 
 
+/**
+ * template page-order
+ */
+function myshop_register_order_template( $templates ) {
+    $templates['page-order.php'] = 'Trang Đơn Hàng (9shop Orders)';
+    return $templates;
+}
+add_filter( 'theme_page_templates', 'myshop_register_order_template' );
