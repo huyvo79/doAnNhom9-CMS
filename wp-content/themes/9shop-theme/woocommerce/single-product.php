@@ -225,7 +225,7 @@ global $product;
                     <div class="col-12 mt-4">
                         <?php woocommerce_output_product_data_tabs(); ?>
                     </div>
-                    <?php get_template_part('template-parts/related-product-items'); ?>
+                    <?php get_template_part('woocommerce/single-product/related'); ?>
                 </div>
             </div>
         </div>
