@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
                     <ul class="nav nav-pills d-inline-flex text-center mb-5">
                         <li class="nav-item mb-4">
                             <a class="d-flex mx-2 py-2 bg-light rounded-pill active" data-bs-toggle="pill"
-                               href="#tab-all">
+                                href="#tab-all">
                                 <span class="text-dark" style="width: 130px;">All Products</span>
                             </a>
                         </li>
@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
                         </li>
                         <li class="nav-item mb-4">
                             <a class="d-flex mx-2 py-2 bg-light rounded-pill" data-bs-toggle="pill"
-                               href="#tab-featured">
+                                href="#tab-featured">
                                 <span class="text-dark" style="width: 130px;">Featured</span>
                             </a>
                         </li>
@@ -47,42 +47,44 @@ if (!defined('ABSPATH')) {
                 <?php
                 // danh sách các tab cần render
                 $tabs = [
-                    'tab-all'      => [
+                    'tab-all' => [
                         'label' => 'All Products',
-                        'args'  => [
-                            'post_type'      => 'product',
+                        'args' => [
+                            'post_type' => 'product',
                             'posts_per_page' => 8
                         ]
                     ],
-                    'tab-new'      => [
+                    'tab-new' => [
                         'label' => 'New Arrivals',
-                        'args'  => [
-                            'post_type'      => 'product',
+                        'args' => [
+                            'post_type' => 'product',
                             'posts_per_page' => 8,
-                            'orderby'        => 'date',
-                            'order'          => 'DESC'
+                            'orderby' => 'date',
+                            'order' => 'DESC'
                         ]
                     ],
                     'tab-featured' => [
                         'label' => 'Featured',
-                        'args'  => [
-                            'post_type'      => 'product',
+                        'args' => [
+                            'post_type' => 'product',
                             'posts_per_page' => 8,
-                            'tax_query'      => [[
-                                'taxonomy' => 'product_visibility',
-                                'field'    => 'name',
-                                'terms'    => 'featured',
-                                'operator' => 'IN'
-                            ]]
+                            'tax_query' => [
+                                [
+                                    'taxonomy' => 'product_visibility',
+                                    'field' => 'name',
+                                    'terms' => 'featured',
+                                    'operator' => 'IN'
+                                ]
+                            ]
                         ]
                     ],
-                    'tab-top'      => [
+                    'tab-top' => [
                         'label' => 'Top Selling',
-                        'args'  => [
-                            'post_type'      => 'product',
+                        'args' => [
+                            'post_type' => 'product',
                             'posts_per_page' => 8,
-                            'meta_key'       => 'total_sales',
-                            'orderby'        => 'meta_value_num'
+                            'meta_key' => 'total_sales',
+                            'orderby' => 'meta_value_num'
                         ]
                     ],
                 ];
@@ -91,7 +93,7 @@ if (!defined('ABSPATH')) {
                 foreach ($tabs as $id => $tab):
                     ?>
                     <div id="<?php echo esc_attr($id); ?>"
-                         class="tab-pane fade <?php echo $first ? 'show active' : ''; ?> p-0">
+                        class="tab-pane fade <?php echo $first ? 'show active' : ''; ?> p-0">
                         <div class="row g-4">
                             <?php
                             $loop = new WP_Query($tab['args']);
@@ -100,6 +102,8 @@ if (!defined('ABSPATH')) {
                                 while ($loop->have_posts()):
                                     $loop->the_post();
                                     global $product;
+                                    global $product;
+                                    $percentage = get_product_sale_percentage($product);
                                     ?>
                                     <div class="col-md-6 col-lg-4 col-xl-3">
                                         <div class="product-item rounded wow fadeInUp" data-wow-delay="<?php echo $delay; ?>s">
@@ -115,14 +119,15 @@ if (!defined('ABSPATH')) {
                                                         ?>
                                                     </a>
 
-                                                    <?php if ($product->is_on_sale()): ?>
-                                                        <div class="product-sale">Sale</div>
-                                                    <?php elseif ($product->is_featured()): ?>
+                                                    <?php if ($product->is_on_sale() && $percentage): ?>
+                                                        <div class="product-new"><?php echo esc_html($percentage); ?></div>
+                                                    <?php else: ?>
                                                         <div class="product-new">New</div>
                                                     <?php endif; ?>
 
                                                     <div class="product-details">
-                                                        <a href="<?php echo esc_url(get_permalink()); ?>"><i class="fa fa-eye fa-1x"></i></a>
+                                                        <a href="<?php echo esc_url(get_permalink()); ?>"><i
+                                                                class="fa fa-eye fa-1x"></i></a>
                                                     </div>
                                                 </div>
 
@@ -130,7 +135,8 @@ if (!defined('ABSPATH')) {
                                                     <a href="#" class="d-block mb-2">
                                                         <?php echo wp_kses_post(wc_get_product_category_list($product->get_id())); ?>
                                                     </a>
-                                                    <a href="<?php echo esc_url(get_permalink()); ?>" class="d-block h4"><?php the_title(); ?></a>
+                                                    <a href="<?php echo esc_url(get_permalink()); ?>"
+                                                        class="d-block h4"><?php the_title(); ?></a>
                                                     <?php echo $product->get_price_html(); ?>
                                                 </div>
                                             </div>
@@ -148,11 +154,15 @@ if (!defined('ABSPATH')) {
                                                         ?>
                                                     </div>
                                                     <div class="d-flex">
-                                                        <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3">
-                                                            <span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></span>
+                                                        <a href="#"
+                                                            class="text-primary d-flex align-items-center justify-content-center me-3">
+                                                            <span class="rounded-circle btn-sm-square border"><i
+                                                                    class="fas fa-random"></i></span>
                                                         </a>
-                                                        <a href="#" class="text-primary d-flex align-items-center justify-content-center me-0">
-                                                            <span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></span>
+                                                        <a href="#"
+                                                            class="text-primary d-flex align-items-center justify-content-center me-0">
+                                                            <span class="rounded-circle btn-sm-square border"><i
+                                                                    class="fas fa-heart"></i></span>
                                                         </a>
                                                     </div>
                                                 </div>
