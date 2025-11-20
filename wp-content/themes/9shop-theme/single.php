@@ -6,13 +6,13 @@
         <?php woocommerce_breadcrumb(); ?>
     </ol>
 </div>
-<div class="container blog-single-page">
+<div class="container-fluid blog-single-page px-5">
 
     <!-- Single Page Header End -->
     <div class="row">
 
         <!-- MAIN CONTENT -->
-        <div class="col-lg-9 col-md-9">
+        <div class="col-lg-8 col-md-8">
             <?php
             if (have_posts()):
                 while (have_posts()):
@@ -46,33 +46,7 @@
 
                     <!-- RELATED POSTS -->
                     <div class="related-posts">
-                        <h3>Bài viết liên quan</h3>
-
-                        <?php
-                        $related = new WP_Query([
-                            'category__in' => wp_get_post_categories(get_the_ID()),
-                            'posts_per_page' => 3,
-                            'post__not_in' => [get_the_ID()],
-                        ]);
-
-                        if ($related->have_posts()):
-                            echo '<div class="row">';
-                            while ($related->have_posts()):
-                                $related->the_post(); ?>
-
-                                <div class="col-md-4 related-item">
-                                    <a href="<?php the_permalink(); ?>">
-                                        <?php the_post_thumbnail('medium'); ?>
-                                        <h4><?php the_title(); ?></h4>
-                                    </a>
-                                </div>
-
-                            <?php endwhile;
-                            echo '</div>';
-                        endif;
-
-                        wp_reset_postdata();
-                        ?>
+                        <?php echo do_shortcode( '[the-post-grid id="221" title="Bài viết liên quan"]' ); ?>
                     </div>
 
                 <?php endwhile;
@@ -81,7 +55,7 @@
         </div>
 
         <!-- SIDEBAR -->
-        <div class="col-lg-3 col-md-3">
+        <div class="col-lg-4 col-md-4">
             <?php if (is_active_sidebar('blog-sidebar')): ?>
                 <?php dynamic_sidebar('blog-sidebar'); ?>
             <?php endif; ?>
