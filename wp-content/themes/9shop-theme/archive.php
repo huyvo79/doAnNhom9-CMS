@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Archive Page
+ * Template Name: Archive blogs Page
  * Description: The template for displaying archive pages (categories, tags, etc.).
  *
  * @package 9shop-theme

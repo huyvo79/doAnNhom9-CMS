@@ -52,7 +52,9 @@
 
                 <!-- Product Grid -->
                 <div class="col-lg-9">
-                    <?php get_template_part('template-parts/content-product-grid'); ?>
+                    <div class="row g-4 justify-content-center">
+                        <?php get_template_part('template-parts/content-product-grid'); ?>
+                    </div>
                 </div>
 
             </div>
