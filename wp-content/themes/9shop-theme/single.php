@@ -45,7 +45,15 @@
                         </div>
 
                     </article>
-                <?php endwhile;
+                    <?php
+                    // Nếu bình luận được mở hoặc có ít nhất một bình luận, tải template bình luận.
+                    if (comments_open() || get_comments_number()):
+                        comments_template();
+                    endif;
+                    ?>
+
+                    <?php
+                endwhile;
             endif;
             ?>
         </div>
