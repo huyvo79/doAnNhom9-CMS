@@ -1,3 +1,11 @@
+<?php
+/**
+ * Template Name: Home page
+ * Description: Template để hiển thị các thành phần chính của cửa hàng.
+ *
+ * @package 9shop-theme
+ */
+?>
 <?php get_header(); ?>
 <main>
     <?php get_template_part('template-parts/carousel'); ?>
