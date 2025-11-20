@@ -225,7 +225,10 @@ global $product;
                     <div class="col-12 mt-4">
                         <?php woocommerce_output_product_data_tabs(); ?>
                     </div>
-                    <?php get_template_part('woocommerce/single-product/related'); ?>
+                    <div class="col-12 bg-light p-4 rounded shadow-sm mb-5 mt-5">
+                        <h4 class="mb-5 text-center section-title-highlight">Latest product</h4>
+                        <?php echo do_shortcode('[sp_wpcarousel id="360"]'); ?>
+                    </div>
                 </div>
             </div>
         </div>

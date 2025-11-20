@@ -132,6 +132,7 @@
                         <div class="navbar-nav ms-auto py-0">
                             <a href="<?php echo home_url(); ?>" class="nav-item nav-link active">Home</a>
                             <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) ); ?>" class="nav-item nav-link">Shop</a>
+                            <a href="<?php echo get_permalink( get_option( 'page_for_posts' ) ); ?>" class="nav-item nav-link">News</a>
                             
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>

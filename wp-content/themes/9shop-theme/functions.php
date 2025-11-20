@@ -67,6 +67,15 @@ function myshop_enqueue_assets()
     wp_enqueue_style('main-style', get_template_directory_uri() . '/assets/css/style.css', ['bootstrap'], null);
     wp_enqueue_style('woocommerce-custom', get_template_directory_uri() . '/assets/css/woocommerce-custom.css', ['woocommerce-general'], null);
 
+    // Tải file CSS tùy chỉnh chung
+    wp_enqueue_style('custom-style', get_template_directory_uri() . '/assets/css/custom.css', ['main-style'], '1.0.1');
+
+    // Chỉ tải file CSS cho phân trang trên trang chủ, trang lưu trữ hoặc trang tìm kiếm
+    if ( is_home() || is_archive() || is_search() ) {
+        wp_enqueue_style('9shop-custom-pagination', get_template_directory_uri() . '/assets/css/custom-pagination.css', ['main-style'], '1.0.1');
+    }
+
+
     // --- JS ---
     wp_enqueue_script('jquery');
     wp_enqueue_script('bootstrap', get_template_directory_uri() . '/assets/js/bootstrap.bundle.min.js', ['jquery'], '5.3.0', true);
@@ -78,13 +87,6 @@ function myshop_enqueue_assets()
     wp_enqueue_script('myshop-main', get_template_directory_uri() . '/assets/js/main.js', ['jquery', 'owlcarousel', 'wow'], null, true);
 }
 add_action('wp_enqueue_scripts', 'myshop_enqueue_assets');
-
-function my_custom_styles()
-{
-    wp_enqueue_style('custom-style', get_template_directory_uri() . '/assets/css/custom.css');
-}
-add_action('wp_enqueue_scripts', 'my_custom_styles');
-
 
 
 /**
@@ -307,7 +309,7 @@ function custom_blog_sidebar()
 add_action('widgets_init', 'custom_blog_sidebar');
 
 function custom_single_blog_styles() {
-    if (is_single() && 'post' === get_post_type()) {
+    if ( (is_single() && 'post' === get_post_type()) || is_home() || is_archive() ) {
         wp_enqueue_style(
             'single-blog-style',
             get_template_directory_uri() . '/assets/css/single-blog.css',

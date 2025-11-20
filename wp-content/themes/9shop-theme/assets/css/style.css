@@ -1153,3 +1153,26 @@
     color: #fda50d;
 }
 
+/* --- Custom Section Title Highlight --- */
+.section-title-highlight {
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px;
+    /* Khoảng trống cho đường gạch chân */
+}
+
+.section-title-highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    /* Chiều rộng của đường gạch chân */
+    height: 3px;
+    /* Độ dày của đường gạch chân */
+    background-color: var(--bs-primary);
+    /* Sử dụng màu chính của theme */
+}

@@ -8,23 +8,21 @@ body {
 }
 */
 a {
-    color: #f5ad06; /* Primary link color */
+    color: #f5ad06;
+    /* Primary link color */
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-a:hover {
-    color: #0056b3;
-    text-decoration: underline;
-}
-
 /* --- Breadcrumb & Header --- */
 .page-header {
-    background-color: #007bff; /* Example: Blue background for header/breadcrumb */
+    background-color: #007bff;
+    /* Example: Blue background for header/breadcrumb */
     padding: 3rem 0;
     margin-bottom: 30px;
     position: relative;
-    overflow: hidden; /* To handle potential animation effects */
+    overflow: hidden;
+    /* To handle potential animation effects */
 }
 
 .page-header::before {
@@ -42,12 +40,16 @@ a:hover {
     font-size: 2.5rem;
     font-weight: 700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    /* Thêm position để z-index hoạt động */
 }
 
 .page-header .breadcrumb {
     background: none;
     padding: 0;
     margin-top: 15px;
+    position: relative;
+    /* Thêm position để z-index hoạt động */
 }
 
 .page-header .breadcrumb .breadcrumb-item {
@@ -100,14 +102,16 @@ a:hover {
 }
 
 .single-post-container .post-meta i {
-    color: #007bff; /* Icon color */
+    color: #007bff;
+    /* Icon color */
     margin-right: 5px;
 }
 
 /* --- Post Thumbnail --- */
 .single-post-container .post-thumbnail {
     margin-bottom: 30px;
-    overflow: hidden; /* Ensures image fits container */
+    overflow: hidden;
+    /* Ensures image fits container */
     border-radius: 6px;
 }
 
@@ -205,7 +209,8 @@ a:hover {
 .related-posts {
     margin-top: 40px;
     padding: 30px;
-    background-color: #f1f1f1; /* Light background for the section */
+    background-color: #f1f1f1;
+    /* Light background for the section */
     border-radius: 8px;
 }
 
@@ -230,7 +235,8 @@ a:hover {
 
 .related-posts .related-item img {
     width: 100%;
-    height: 180px; /* Fixed height for consistency */
+    height: 180px;
+    /* Fixed height for consistency */
     object-fit: cover;
     border-radius: 6px;
     margin-bottom: 10px;
@@ -279,13 +285,16 @@ a:hover {
 
 /* --- Responsive Adjustments --- */
 @media (max-width: 991.98px) {
+
     /* For Tablets and smaller desktops, stack sidebar on top or bottom */
-    .col-lg-8, .col-lg-4 {
+    .col-lg-8,
+    .col-lg-4 {
         margin-bottom: 30px;
     }
 }
 
 @media (max-width: 767.98px) {
+
     /* For mobile devices */
     .page-header h1 {
         font-size: 2rem;
@@ -296,6 +305,125 @@ a:hover {
     }
 
     .related-posts .related-item img {
-        height: auto; /* Adjust for better stacking on small screens */
+        height: auto;
+        /* Adjust for better stacking on small screens */
     }
+}
+
+/* 3. Định kiểu cho Danh sách (UL) */
+/* Áp dụng cho danh sách không có dấu chấm mặc định */
+.wp-block-categories,
+.wp-block-categories li {
+    list-style: none !important;
+    /* Quan trọng: loại bỏ dấu chấm/bullet */
+    padding-left: 0;
+    /* Đảm bảo không còn khoảng đệm do dấu chấm tạo ra */
+}
+
+/* 5. Định kiểu cho Liên kết (A) */
+.wp-block-categories li a {
+    display: block;
+    text-decoration: none;
+    color: #495057;
+    /* Màu chữ mặc định là xám đậm, dễ đọc */
+    font-size: 15px;
+    font-weight: 500;
+    padding: 3px 0;
+    position: relative;
+    padding-left: 15px;
+    /* Khoảng đệm cho dấu chấm tùy chỉnh (nếu dùng) */
+    transition: all 0.2s ease;
+}
+
+/* 6. Tạo dấu chấm tùy chỉnh (dùng pseudo-element) */
+.wp-block-categories li a::before {
+    content: "•";
+    /* Dấu chấm tròn */
+    color: #ced4da;
+    /* Màu xám nhạt cho dấu chấm/gạch */
+    font-size: 1.2em;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* 7. Hiệu ứng Rê chuột (Hover) */
+.wp-block-categories li a:hover {
+    color: #ff8c00;
+    /* Màu xanh nổi bật khi rê chuột */
+    font-weight: 600;
+    /* Hơi đậm hơn */
+    /* text-decoration: underline;  Tùy chọn: Thêm gạch chân */
+}
+
+/* Đổi màu dấu chấm khi rê chuột */
+.wp-block-categories li a:hover::before {
+    color: #ff8c00;
+}
+
+/* Thiết lập cho khối bao ngoài (div class="wp-block-button") */
+.wp-block-button {
+    width: 100%;
+    text-align: center;
+    /* Đảm bảo loại bỏ margin/padding ở khối cha */
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Thiết lập cho phần tử nút (a class="wp-block-button__link") */
+.wp-block-button .wp-block-button__link {
+    /* Quan trọng: Buộc thẻ <a> chiếm toàn bộ chiều rộng của khối cha */
+    display: block;
+    width: 100%;
+
+    /* Màu nền CAM */
+    background-color: #ff9933;
+    /* Một sắc thái cam đẹp */
+    color: #ffffff;
+    /* Màu chữ trắng */
+    font-size: 18px;
+    font-weight: bold;
+
+    /* Đệm (Padding): Bỏ đệm trên (top) */
+    padding-top: 12px;
+    padding-bottom: 12px;
+    /* Đệm dưới */
+    padding-left: 20px;
+    padding-right: 20px;
+
+    /* Margin: Bỏ margin ở đây (nếu có) */
+    margin: 0 !important;
+
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+/* Hiệu ứng khi di chuột qua nút (Hover Effect) */
+.wp-block-button .wp-block-button__link:hover {
+    background-color: #cc7a00;
+    /* Màu cam đậm hơn khi di chuột */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Custom Section Title Highlight --- */
+.section-title-highlight {
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px; /* Khoảng trống cho đường gạch chân */
+}
+
+.section-title-highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px; /* Chiều rộng của đường gạch chân */
+    height: 3px; /* Độ dày của đường gạch chân */
+    background-color: var(--bs-primary); /* Sử dụng màu chính của theme */
 }

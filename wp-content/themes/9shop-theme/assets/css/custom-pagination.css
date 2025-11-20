@@ -1,0 +1,29 @@
+.pagination .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px; /* Khoảng cách giữa các nút */
+}
+.pagination .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    min-width: 45px; /* Chiều rộng tối thiểu */
+    border: 1px solid #dee2e6;
+    border-radius: 50px; /* Bo tròn thành hình viên thuốc */
+    color: var(--bs-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+.pagination .page-numbers:hover {
+    background-color: #f8f9fa;
+    color: #f8f9fa;
+    border-color: var(--bs-primary);
+}
+.pagination .page-numbers.current {
+    background-color: var(--bs-primary);
+    color: #fff;
+    border-color: var(--bs-primary);
+}
