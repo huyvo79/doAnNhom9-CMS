@@ -336,6 +336,8 @@ add_filter( 'theme_page_templates', 'myshop_register_order_template' );
 function myshop_register_custom_templates( $templates ) {
     $templates['page-order.php'] = 'Trang Đơn Hàng (9shop Orders)'; // Giữ lại template cũ
     $templates['page-coupon.php'] = 'Trang Mã Giảm Giá (9shop Coupons)'; // Thêm template mới
+    $templates['page-9shop.php'] = 'Home'; // Thêm template mới
+    $templates['blog.php'] = 'Blog'; // Thêm template mới
     return $templates;
 }
 add_filter( 'theme_page_templates', 'myshop_register_custom_templates' );
