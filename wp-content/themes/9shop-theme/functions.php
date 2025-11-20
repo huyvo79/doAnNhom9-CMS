@@ -340,4 +340,29 @@ function myshop_register_custom_templates( $templates ) {
 }
 add_filter( 'theme_page_templates', 'myshop_register_custom_templates' );
 
+function get_product_sale_percentage($product) {
+    if (!$product->is_on_sale()) {
+        return '';
+    }
+
+    $regular_price = (float) $product->get_regular_price();
+    $sale_price = (float) $product->get_sale_price();
+
+    // Nếu là sản phẩm Biến thể, lấy giá trị thấp nhất
+    if ($product->is_type('variable')) {
+        $regular_price = (float) $product->get_variation_regular_price('min', true);
+        $sale_price = (float) $product->get_variation_sale_price('min', true);
+    }
+    
+    // Nếu giá không hợp lệ, trả về rỗng
+    if ($regular_price <= 0 || $regular_price <= $sale_price) {
+        return '';
+    }
+
+    $discount = $regular_price - $sale_price;
+    $percentage = round(($discount / $regular_price) * 100);
+
+    return $percentage . '%';
+}
+
  

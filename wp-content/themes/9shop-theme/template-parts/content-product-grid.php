@@ -11,17 +11,41 @@ if (!class_exists('WooCommerce')) {
 
 $paged = get_query_var('paged') ? get_query_var('paged') : 1;
 
+// --- Bắt đầu: Logic Lọc theo Danh mục Sản phẩm (Đã Thay Đổi) ---
+
 $args = array(
     'post_type' => 'product',
     'posts_per_page' => 9,
     'paged' => $paged,
 );
 
+// Lấy thông tin về trang hiện tại (nếu là trang lưu trữ danh mục/tag)
+$current_term = get_queried_object();
+$category_title = ''; // Khởi tạo biến lưu tiêu đề
+
+// Kiểm tra xem trang hiện tại có phải là trang lưu trữ danh mục sản phẩm (product_cat) hay không
+if ($current_term && is_a($current_term, 'WP_Term') && $current_term->taxonomy == 'product_cat') {
+
+    // Nếu là trang danh mục, thêm điều kiện tax_query vào $args để lọc sản phẩm
+    $args['tax_query'] = array(
+        array(
+            'taxonomy' => 'product_cat',
+            'field' => 'slug', // Lọc theo slug của danh mục
+            'terms' => $current_term->slug, // Slug của danh mục hiện tại
+        ),
+    );
+
+    // Lấy tiêu đề danh mục để hiển thị
+    $category_title = $current_term->name;
+}
+
+// --- Kết thúc: Logic Lọc theo Danh mục Sản phẩm ---
+
+// Sử dụng new WP_Query với $args đã cập nhật
 $query = new WP_Query($args);
 
 if ($query->have_posts()):
     ?>
-    <!-- Banner đầu trang -->
     <div class="rounded mb-4 position-relative">
         <img src="<?php echo get_template_directory_uri(); ?>/assets/img/product-banner-3.jpg"
             class="img-fluid rounded w-100" style="height: 250px;" alt="Image">
@@ -33,7 +57,7 @@ if ($query->have_posts()):
         </div>
     </div>
 
-    <!-- Bộ lọc tìm kiếm và sort -->
+
     <div class="row g-4 align-items-center mb-4">
         <div class="col-xl-7">
             <?php get_product_search_form(); ?>
@@ -57,13 +81,18 @@ if ($query->have_posts()):
         </div>
     </div>
 
-    <!-- Danh sách sản phẩm -->
     <div class="tab-content">
         <div id="tab-5" class="tab-pane fade show active p-0">
             <div class="row g-4 product">
                 <?php while ($query->have_posts()):
                     $query->the_post();
                     global $product;
+                    $percentage = get_product_sale_percentage($product);
+
+                    $img = wp_get_attachment_image_src($product->get_image_id(), 'medium')[0] ?? wc_placeholder_img_src();
+                    $rating = wc_get_rating_html($product->get_average_rating());
+                    $price_html = $product->get_price_html();
+                    $cat_list = wc_get_product_category_list($product->get_id(), ', ');
 
                     $img = wp_get_attachment_image_src($product->get_image_id(), 'medium')[0] ?? wc_placeholder_img_src();
                     $rating = wc_get_rating_html($product->get_average_rating());
@@ -79,8 +108,8 @@ if ($query->have_posts()):
                                             alt="<?php the_title(); ?>">
                                     </a>
 
-                                    <?php if ($product->is_on_sale()): ?>
-                                        <div class="product-new">Sale</div>
+                                    <?php if ($product->is_on_sale() && $percentage): ?>
+                                        <div class="product-new"><?php echo esc_html($percentage); ?></div>
                                     <?php else: ?>
                                         <div class="product-new">New</div>
                                     <?php endif; ?>
@@ -94,10 +123,19 @@ if ($query->have_posts()):
                                     <a href="<?php the_permalink(); ?>"
                                         class="d-block mb-2"><?php echo wp_kses_post($cat_list); ?></a>
                                     <a href="<?php the_permalink(); ?>" class="d-block h4"><?php the_title(); ?></a>
-                                    <?php if ($product->get_regular_price() && $product->get_sale_price()): ?>
-                                        <del class="me-2 fs-5"><?php echo wc_price($product->get_regular_price()); ?></del>
-                                    <?php endif; ?>
-                                    <span class="text-primary fs-5"><?php echo wp_kses_post($price_html); ?></span>
+
+                                    <?php
+                                    if ($product->is_on_sale()) {
+                                        // 1. Hiển thị Giá Gạch ngang (Giá thường)
+                                        $regular_price = $product->get_regular_price();
+
+                                        // 2. Hiển thị Giá khuyến mãi/Giá hiện tại (sử dụng get_price_html để lấy giá đã được làm đẹp, nhưng đã loại bỏ phần gạch ngang)
+                                        echo '<span class="text-primary fs-5">' . $product->get_price_html() . '</span>';
+                                    } else {
+                                        // Nếu KHÔNG có khuyến mãi, chỉ hiển thị 1 Giá duy nhất (Giá hiện tại)
+                                        echo '<span class="text-primary fs-5">' . $product->get_price_html() . '</span>';
+                                    }
+                                    ?>
                                 </div>
                             </div>
 
@@ -126,28 +164,24 @@ if ($query->have_posts()):
             </div>
 
             <?php
-            global $wp_query;
+            // Điều chỉnh logic phân trang
+            $total_pages = $query->max_num_pages;
+            $current_page = max(1, get_query_var('paged'));
 
-            $total_pages = $wp_query->max_num_pages;      // Tổng số trang
-            $current_page = max(1, get_query_var('paged')); // Trang hiện tại
-        
             if ($total_pages > 1): ?>
                 <div class="pagination d-flex justify-content-center mt-5">
 
-                    <!-- Previous -->
                     <a class="rounded <?= $current_page == 1 ? 'disabled' : '' ?>"
                         href="<?= $current_page == 1 ? '#' : get_pagenum_link($current_page - 1); ?>">
                         &laquo;
                     </a>
 
-                    <!-- Page numbers -->
                     <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                         <a href="<?= get_pagenum_link($i) ?>" class="rounded <?= $i == $current_page ? 'active' : '' ?>">
                             <?= $i ?>
                         </a>
                     <?php endfor; ?>
 
-                    <!-- Next -->
                     <a class="rounded <?= $current_page == $total_pages ? 'disabled' : '' ?>"
                         href="<?= $current_page == $total_pages ? '#' : get_pagenum_link($current_page + 1); ?>">
                         &raquo;
@@ -164,5 +198,6 @@ else:
     echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
 endif;
 
+// Quan trọng: Đặt lại dữ liệu bài viết sau khi sử dụng WP_Query tùy chỉnh
 wp_reset_postdata();
 ?>
