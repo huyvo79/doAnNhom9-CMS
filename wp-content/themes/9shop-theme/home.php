@@ -1,7 +1,7 @@
 <?php
 /**
- * Template Name: Archive Page
- * Description: The template for displaying archive pages (categories, tags, etc.).
+ * Template Name: blogs Page
+ * Description: home blogs Page
  *
  * @package 9shop-theme
  */
