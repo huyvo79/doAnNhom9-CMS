@@ -26,14 +26,6 @@ global $product;
         <div class="row g-4">
             <!-- Sidebar -->
             <div class="col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.1s">
-
-                <!-- Search -->
-                <div class="input-group w-100 mx-auto d-flex mb-4">
-                    <input type="search" class="form-control p-3" placeholder="Search products..." name="s"
-                        value="<?php echo get_search_query(); ?>">
-                    <button class="input-group-text p-3"><i class="fa fa-search"></i></button>
-                </div>
-
                 <!-- Categories -->
                 <div class="product-categories mb-4">
                     <h4 class="fw-bold mb-3">Product Categories</h4>
@@ -67,7 +59,7 @@ global $product;
 
                 <!-- Featured Products -->
                 <div class="featured-product mb-4">
-                    <h4 class="mb-3">Featured Products</h4>
+                    <h4 class="mb-3">Recently Viewed</h4>
 
                     <?php
                     // Bắt đầu code mới: Truy vấn sản phẩm nổi bật
@@ -112,9 +104,8 @@ global $product;
                                     </h5>
                                     <?php
                                     // Hiển thị rating (nếu có)
-                                    if ($product->get_average_rating()) {
-                                        echo wc_get_rating_html($product->get_average_rating(), 0);
-                                    }
+                                    // Sử dụng shortcode của CusRev để hiển thị rating
+                                    echo do_shortcode('[cusrev_reviews_rating color_stars="#FFBC00" product="' . $product->get_id() . '"]');
                                     ?>
                                     <span class="price"><?php echo $product->get_price_html(); ?></span>
                                 </div>
@@ -200,7 +191,7 @@ global $product;
                         <h5 class="fw-bold mb-3"><?php echo $product->get_price_html(); ?></h5>
 
                         <div class="d-flex mb-4">
-                            <?php woocommerce_template_single_rating(); ?>
+                            <?php echo do_shortcode('[cusrev_reviews_rating color_stars="#FFBC00" product=""]'); ?>
                         </div>
                         <div class="mb-3">
                             <div class="btn btn-primary d-inline-block rounded text-white py-1 px-4 me-2"><i
