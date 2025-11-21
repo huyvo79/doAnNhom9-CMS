@@ -131,8 +131,20 @@
                     <div class="collapse navbar-collapse" id="navbarCollapse">
                         <div class="navbar-nav ms-auto py-0">
                             <a href="<?php echo home_url(); ?>" class="nav-item nav-link active">Home</a>
-                            <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) ); ?>" class="nav-item nav-link">Shop</a>
-                            <a href="<?php echo get_permalink( get_option( 'page_for_posts' ) ); ?>" class="nav-item nav-link">News</a>
+                            <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>" class="nav-item nav-link">Shop</a>
+                            <?php
+                                // Tìm trang sử dụng template 'template-blog.php'
+                                $blog_pages = get_pages(array(
+                                    'meta_key' => '_wp_page_template',
+                                    'meta_value' => 'template-blog.php',
+                                    'hierarchical' => 0
+                                ));
+                                $blog_page_url = '#'; // URL dự phòng
+                                if (!empty($blog_pages)) {
+                                    $blog_page_url = get_permalink($blog_pages[0]->ID);
+                                }
+                            ?>
+                            <a href="<?php echo esc_url($blog_page_url); ?>" class="nav-item nav-link">News</a>
                             
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
