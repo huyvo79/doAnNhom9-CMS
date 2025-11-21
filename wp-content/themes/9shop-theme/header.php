@@ -13,7 +13,6 @@
         href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
         rel="stylesheet">
 </head>
-
 <body>
 
     <div id="spinner"
@@ -22,7 +21,7 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-    <div class="container-fluid px-5 d-none border-bottom d-lg-block">
+    <div class="container-fluid d-none border-bottom d-lg-block">
         <div class="row gx-0 align-items-center">
             <div class="col-lg-4 text-center text-lg-start mb-lg-0">
                 <div class="d-inline-flex align-items-center" style="height: 45px;">
@@ -81,8 +80,21 @@
             <div class="col-md-4 col-lg-3 text-center text-lg-start">
                 <div class="d-inline-flex align-items-center">
                     <a href="<?php echo home_url(); ?>" class="navbar-brand p-0">
-                        <h1 class="display-5 text-primary m-0"><i
-                                class="fas fa-shopping-bag text-secondary me-2"></i>9Shop</h1>
+                        <?php
+                        $custom_logo_id = get_theme_mod('custom_logo');
+                        $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
+
+                        if (has_custom_logo()) {
+                            // Render ảnh thủ công với Inline Style cứng để ép kích thước
+                            echo '<img src="' . esc_url($logo[0]) . '" alt="' . get_bloginfo('name') . '" style="height: 80px !important; width: auto !important; max-width: 100%;">';
+                        } else {
+                            // Fallback text
+                            echo '<h1 class="display-5 text-primary m-0">';
+                            echo '<i class="fas fa-shopping-bag text-secondary me-2"></i>';
+                            echo get_bloginfo('name');
+                            echo '</h1>';
+                        }
+                        ?>
                     </a>
                 </div>
             </div>
@@ -127,8 +139,8 @@
             <div class="col-12 col-lg-9">
                 <nav class="navbar navbar-expand-lg navbar-light bg-primary ">
                     <a href="<?php echo home_url(); ?>" class="navbar-brand d-block d-lg-none">
-                        <h1 class="display-5 text-secondary m-0"><i
-                                class="fas fa-shopping-bag text-white me-2"></i></h1>
+                        <h1 class="display-5 text-secondary m-0"><i class="fas fa-shopping-bag text-white me-2"></i>
+                        </h1>
                     </a>
                     <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarCollapse">
