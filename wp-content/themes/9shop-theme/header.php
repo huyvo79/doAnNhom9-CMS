@@ -13,6 +13,7 @@
         href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
         rel="stylesheet">
 </head>
+
 <body>
 
     <div id="spinner"
@@ -21,26 +22,26 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-    <div class="container-fluid d-none border-bottom d-lg-block">
+    <div class="container-fluid d-none border-bottom d-lg-block bg-dark">
         <div class="row gx-0 align-items-center">
             <div class="col-lg-4 text-center text-lg-start mb-lg-0">
                 <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <a href="#" class="text-muted me-2"> Help</a><small> / </small>
-                    <a href="#" class="text-muted mx-2"> Support</a><small> / </small>
+                    <a href="#" class="text-white-50 me-2"> Help</a><small> / </small>
+                    <a href="#" class="text-white-50 mx-2"> Support</a><small> / </small>
                     <a href="<?php echo esc_url(get_permalink(get_page_by_path('contact-us'))); ?>"
-                        class="text-muted ms-2"> Contact</a>
+                        class="text-white-50 ms-2"> Contact</a>
                 </div>
             </div>
             <div class="col-lg-4 text-center d-flex align-items-center justify-content-center">
-                <small class="text-dark">Call Vn:</small>
-                <a href="#" class="text-muted">(+84) 1234 567890</a>
+                <small class="text-white-50">Call Vn:</small>
+                <a href="#" class="text-white-50">(+84) 1234 567890</a>
             </div>
 
             <div class="col-lg-4 text-center text-lg-end">
                 <div class="d-inline-flex align-items-center" style="height: 45px;">
 
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle text-muted" data-bs-toggle="dropdown">
+                    <div class="nav-item dropdown hover-dropdown">
+                        <a href="#" class="nav-link dropdown-toggle text-white-50" data-bs-toggle="dropdown">
                             <small>
                                 <i class="fa fa-user me-2"></i>
                                 <?php
@@ -57,7 +58,7 @@
                         <div class="dropdown-menu m-0 rounded">
                             <?php if (is_user_logged_in()): ?>
                                 <a href="<?php echo get_permalink(get_option('woocommerce_myaccount_page_id')); ?>"
-                                    class="dropdown-item">Dashboard</a>
+                                    class="dropdown-item">Tài khoản</a>
                                 <a href="<?php echo wc_get_account_endpoint_url('orders'); ?>" class="dropdown-item">Đơn
                                     hàng của tôi</a>
                                 <a href="<?php echo wc_get_account_endpoint_url('edit-account'); ?>"
@@ -99,7 +100,7 @@
                 </div>
             </div>
             <div class="col-md-4 col-lg-6 text-center">
-                <div class="position-relative ps-4">
+                <div class="position-relative w-100 premium-search-wrap">
                     <?php echo do_shortcode('[aws_search_form]'); ?>
                 </div>
             </div>
@@ -120,18 +121,23 @@
     <div class="container-fluid nav-bar p-0">
         <div class="row gx-0 bg-primary px-5 align-items-center">
             <div class="col-lg-3 d-none d-lg-block">
-                <nav class="navbar navbar-light position-relative" style="width: 250px;">
+                <nav class="navbar navbar-light position-relative hover-open" style="width: 250px;">
                     <button class="navbar-toggler border-0 fs-4 w-100 px-0 text-start" type="button"
                         data-bs-toggle="collapse" data-bs-target="#allCat">
                         <h4 class="m-0"><i class="fa fa-bars me-2"></i>All Categories</h4>
                     </button>
+
                     <div class="collapse navbar-collapse rounded-bottom" id="allCat">
-                        <div class="navbar-nav ms-auto py-0">
-                            <ul class="list-unstyled categories-bars">
-                                <li>
-                                    <div class="categories-bars-item"><a href="#">Ví dụ danh mục 1</a></div>
-                                </li>
-                            </ul>
+                        <div class="navbar-nav ms-auto py-0 w-100"> <?php
+                        wp_nav_menu(array(
+                            'theme_location' => 'all_categories',
+                            'container' => false,
+                            'menu_class' => 'list-unstyled categories-bars',
+                            'fallback_cb' => false,
+                            'depth' => 3, // Cho phép hiện sâu 3 cấp
+                            'walker' => new MyShop_Category_Walker(), // Gọi walker class mới
+                        ));
+                        ?>
                         </div>
                     </div>
                 </nav>
@@ -165,7 +171,7 @@
                             ?>
                             <a href="<?php echo esc_url($blog_page_url); ?>" class="nav-item nav-link">News</a>
 
-                            <div class="nav-item dropdown">
+                            <!-- <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu m-0">
                                     <a href="<?php echo wc_get_cart_url(); ?>" class="dropdown-item">Giỏ hàng (Cart)</a>
@@ -174,9 +180,9 @@
                                     <a href="<?php echo get_permalink(get_option('woocommerce_myaccount_page_id')); ?>"
                                         class="dropdown-item">Tài khoản</a>
                                 </div>
-                            </div>
+                            </div> -->
                             <a href="<?php echo esc_url(get_permalink(get_page_by_path('contact-us'))); ?>"
-                                class="nav-item nav-link me-2">Contact</a>
+                                class="nav-item nav-link me-2">Contact us</a>
                         </div>
                         <div class="d-none d-lg-block">
                             <a href="#" class="btn btn-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0"><i

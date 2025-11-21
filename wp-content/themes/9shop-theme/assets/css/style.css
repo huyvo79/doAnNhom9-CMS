@@ -1130,3 +1130,193 @@
     background-color: var(--bs-primary);
     /* Sử dụng màu chính của theme */
 }
+
+/* 1. Biến cái form thành một cái hộp dẻo (Flexbox) để căn chỉnh */
+.premium-search-wrap form.aws-search-form {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    background-color: #ffffff !important;
+
+    /* Bo góc cho cả cụm (Input + Button) */
+    border-radius: 8px !important;
+    /* Số càng lớn càng tròn, 8px là chuẩn công nghệ */
+
+    /* Viền mỏng bao quanh cả cụm */
+    border: 1px solid #d1d1d1 !important;
+
+    /* Cắt bỏ những phần lòi ra (để nút vuông không bị lòi ra khỏi góc bo) */
+    overflow: hidden !important;
+
+    /* Đổ bóng nhẹ */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 2. Xử lý ô nhập liệu (Bỏ viền riêng của nó đi) */
+.premium-search-wrap .aws-search-field {
+    flex-grow: 1 !important;
+    /* Chiếm hết khoảng trống còn lại */
+    border: none !important;
+    /* Xóa viền */
+    background: transparent !important;
+    /* Nền trong suốt */
+    height: 45px !important;
+    margin: 0 !important;
+    padding: 0 15px !important;
+    /* Cách lề trái một chút */
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    /* Không bo góc riêng lẻ nữa */
+}
+
+/* 3. Xử lý cái nút (Dính liền vào bên phải) */
+.premium-search-wrap .aws-search-btn {
+    width: 50px !important;
+    /* Độ rộng nút */
+    height: 45px !important;
+    /* Bằng chiều cao ô nhập */
+    border: none !important;
+    margin: 0 !important;
+    background-color: #fca311 !important;
+    /* Màu cam của bạn */
+    color: #fff !important;
+    border-radius: 0 !important;
+    /* Vuông vức để khớp với cạnh container */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hiệu ứng khi rê chuột vào nút */
+.premium-search-wrap .aws-search-btn:hover {
+    background-color: #e69500 !important;
+}
+
+/* Hiệu ứng khi Click vào ô tìm kiếm (Viền cả cụm đổi màu) */
+.premium-search-wrap form.aws-search-form:focus-within {
+    border-color: #fca311 !important;
+    box-shadow: 0 4px 12px rgba(252, 163, 17, 0.15) !important;
+}
+
+/* 1. Định vị tương đối cho thẻ li cha */
+.categories-bars li {
+    position: relative;
+}
+
+/* 2. Ẩn menu con mặc định */
+.categories-bars .custom-sub-menu {
+    display: none;
+    position: absolute;
+    left: 100%;
+    /* Đẩy menu con sang bên phải hoàn toàn */
+    top: 0;
+    /* Ngang hàng với menu cha */
+    width: 230px;
+    /* Độ rộng menu con */
+    background: #fff;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ddd;
+    /* Viền nhẹ */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    z-index: 999;
+    /* Luôn nổi lên trên */
+}
+
+/* 3. Hiệu ứng Hover: Khi rê chuột vào li cha, hiện menu con */
+.categories-bars li:hover>.custom-sub-menu {
+    display: block;
+}
+
+/* 4. Style cho item trong menu con */
+.categories-bars .custom-sub-menu li {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.categories-bars .custom-sub-menu .categories-bars-item {
+    padding: 10px 15px;
+    /* Padding cho menu con */
+}
+
+/* --- Hiệu ứng Hover cho All Categories --- */
+
+/* 1. Khi rê chuột vào nav, ép menu con hiển thị */
+.hover-open:hover #allCat {
+    display: block !important;
+    /* !important để đè lên thuộc tính ẩn của Bootstrap */
+    animation: fadeIn 0.3s;
+    /* Hiệu ứng hiện dần cho mượt */
+}
+
+/* 2. Định vị menu để nó "nổi" lên trên (Dropdown style) */
+.hover-open #allCat {
+    position: absolute;
+    top: 100%;
+    /* Nằm ngay dưới nút */
+    left: 0;
+    width: 100%;
+    /* Rộng bằng nút cha (250px) */
+    z-index: 999;
+    /* Đảm bảo nằm trên slider/banner */
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    /* Đổ bóng cho đẹp */
+    border-radius: 0 0 5px 5px;
+}
+
+/* Hiệu ứng Fade in đơn giản */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Hover cho Dropdown My Account (và các dropdown nav-item khác) --- */
+
+@media (min-width: 992px) {
+
+    /* Khi rê chuột vào thẻ cha, hiện menu con */
+    .hover-dropdown:hover .dropdown-menu {
+        display: block;
+        /* Hiệu ứng trượt lên nhẹ nhàng */
+        animation: fadeIn 0.3s;
+        /* Xóa khoảng cách margin mặc định của Bootstrap để chuột không bị 'trượt' ra ngoài */
+        margin-top: 0;
+    }
+}
+
+/* (Tùy chọn) Nếu menu bị lệch, bạn có thể căn chỉnh lại vị trí */
+.hover-dropdown .dropdown-menu {
+    right: 0;
+    /* Căn phải cho đẹp vì nó nằm góc phải màn hình */
+    left: auto;
+}
+
+/* --- Hiệu ứng Hover cho Item danh mục --- */
+
+/* 1. Khi hover vào thẻ a (item) */
+.categories-bars-item:hover {
+    color: #ffffff !important;
+    /* Đổi chữ thành trắng */
+    background-color: var(--bs-primary);
+    /* Đổi nền thành màu chủ đạo (hoặc mã màu bạn thích, vd: #FF6F61) */
+    text-decoration: none;
+    /* Bỏ gạch chân */
+    transition: all 0.3s;
+    /* Hiệu ứng chuyển màu mượt */
+}
+
+/* 2. Đổi luôn màu của icon mũi tên thành trắng khi hover */
+/* Vì trong PHP bạn đang để class 'text-muted' cho icon, nên cần CSS này để đè lên */
+.categories-bars-item:hover i {
+    color: #ffffff !important;
+}
