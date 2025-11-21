@@ -131,24 +131,12 @@ get_header();
 </style>
 
 <!-- Single Page Header start -->
-<div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">
-        <?php the_title(); ?>
-    </h1>
+<div class="container-fluid page-header py-5 mb-5">
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+        <h1 class="display-6 text-white"><?php the_title(); ?></h1>
+    </div>
     <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
-        <li class="breadcrumb-item">
-            <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-                <?php _e('Home', 'your-theme-domain'); ?>
-            </a>
-        </li>
-        <li class="breadcrumb-item">
-            <a href="#">
-                <?php _e('Pages', 'your-theme-domain'); ?>
-            </a>
-        </li>
-        <li class="breadcrumb-item active text-white">
-            <?php the_title(); ?>
-        </li>
+        <?php woocommerce_breadcrumb(); // Hoặc bạn có thể dùng breadcrumb khác nếu muốn ?>
     </ol>
 </div>
 <!-- Single Page Header End -->

@@ -26,8 +26,10 @@
         <div class="row gx-0 align-items-center">
             <div class="col-lg-4 text-center text-lg-start mb-lg-0">
                 <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <a href="#" class="text-white-50 me-2"> Help</a><small> / </small>
-                    <a href="#" class="text-white-50 mx-2"> Support</a><small> / </small>
+                    <a href="<?php echo esc_url(get_permalink(get_page_by_path('help-center'))); ?>"
+                        class="text-white-50 me-2"> Help</a><small> / </small>
+                    <a href="<?php echo esc_url(get_permalink(get_page_by_path('support-center'))); ?>"
+                        class="text-white-50 mx-2"> Support</a><small> / </small>
                     <a href="<?php echo esc_url(get_permalink(get_page_by_path('contact-us'))); ?>"
                         class="text-white-50 ms-2"> Contact</a>
                 </div>
@@ -154,22 +156,35 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarCollapse">
                         <div class="navbar-nav ms-auto py-0">
-                            <a href="<?php echo home_url(); ?>" class="nav-item nav-link active">Home</a>
-                            <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>"
-                                class="nav-item nav-link">Shop</a>
                             <?php
+                            // Lấy ID của trang hiện tại
+                            $current_page_id = get_queried_object_id();
+
                             // Tìm trang sử dụng template 'template-blog.php'
                             $blog_pages = get_pages(array(
                                 'meta_key' => '_wp_page_template',
                                 'meta_value' => 'template-blog.php',
                                 'hierarchical' => 0
                             ));
-                            $blog_page_url = '#'; // URL dự phòng
+                            $blog_page_id = 0;
                             if (!empty($blog_pages)) {
-                                $blog_page_url = get_permalink($blog_pages[0]->ID);
+                                $blog_page_id = $blog_pages[0]->ID;
                             }
+                            $blog_page_url = $blog_page_id ? get_permalink($blog_page_id) : '#';
+
+                            // Lấy ID các trang đặc biệt
+                            $shop_page_id = wc_get_page_id('shop');
+                            $contact_page_id = get_page_by_path('contact-us') ? get_page_by_path('contact-us')->ID : 0;
                             ?>
-                            <a href="<?php echo esc_url($blog_page_url); ?>" class="nav-item nav-link">News</a>
+                            <a href="<?php echo home_url(); ?>"
+                                class="nav-item nav-link <?php if (is_front_page())
+                                    echo 'active'; ?>">Home</a>
+                            <a href="<?php echo esc_url(get_permalink($shop_page_id)); ?>"
+                                class="nav-item nav-link <?php if (is_shop() || is_product_category() || is_product_tag() || is_singular('product'))
+                                    echo 'active'; ?>">Shop</a>
+                            <a href="<?php echo esc_url($blog_page_url); ?>"
+                                class="nav-item nav-link <?php if (is_page($blog_page_id) || is_singular('post') || is_category() || is_tag())
+                                    echo 'active'; ?>">News</a>
 
                             <!-- <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
@@ -179,10 +194,11 @@
                                         (Checkout)</a>
                                     <a href="<?php echo get_permalink(get_option('woocommerce_myaccount_page_id')); ?>"
                                         class="dropdown-item">Tài khoản</a>
-                                </div>
-                            </div> -->
-                            <a href="<?php echo esc_url(get_permalink(get_page_by_path('contact-us'))); ?>"
-                                class="nav-item nav-link me-2">Contact us</a>
+                                </div> -->
+                            <a href="<?php echo esc_url(get_permalink($contact_page_id)); ?>"
+                                class="nav-item nav-link me-2 <?php if (is_page($contact_page_id))
+                                    echo 'active'; ?>">Contact
+                                us</a>
                         </div>
                         <div class="d-none d-lg-block">
                             <a href="#" class="btn btn-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0"><i
