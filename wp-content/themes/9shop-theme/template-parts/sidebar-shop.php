@@ -40,7 +40,7 @@
     <div class="price mb-4">
         <h4 class="mb-2">Price</h4>
         <form method="get" action="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">
-            <input type="range" class="form-range w-100" id="rangeInput" name="max_price" min="0" max="1000" value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : 0; ?>" oninput="amount.value=rangeInput.value">
+            <input type="range" class="form-range w-100" id="rangeInput" name="max_price" min="1000000" max="10000000" value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : 0; ?>" oninput="amount.value=rangeInput.value">
             <output id="amount" name="amount" for="rangeInput"><?php echo isset($_GET['max_price']) ? esc_html($_GET['max_price']) : 0; ?></output>
             <button type="submit" class="btn btn-primary btn-sm mt-2 w-100">Filter</button>
         </form>
