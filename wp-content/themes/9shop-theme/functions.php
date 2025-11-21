@@ -58,27 +58,41 @@ add_action('after_setup_theme', 'myshop_theme_setup');
  */
 function myshop_enqueue_assets()
 {
-    // --- CSS ---
-    wp_enqueue_style('bootstrap', get_template_directory_uri() . '/assets/css/bootstrap.min.css', [], '5.3.0');
+    // --- CSS ---    
+    // Google Fonts
+    wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap', [], null);
+
+    // Font Awesome & Bootstrap Icons
+    wp_enqueue_style('fontawesome', 'https://use.fontawesome.com/releases/v5.15.4/css/all.css', [], '5.15.4');
+    wp_enqueue_style('bootstrap-icons', 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css', [], '1.4.1');
+
+    // Thư viện CSS
     wp_enqueue_style('animate', get_template_directory_uri() . '/assets/lib/animate/animate.min.css', [], null);
     wp_enqueue_style('owlcarousel', get_template_directory_uri() . '/assets/lib/owlcarousel/assets/owl.carousel.min.css', [], null);
-    wp_enqueue_style('owltheme', get_template_directory_uri() . '/assets/lib/owlcarousel/assets/owl.theme.default.min.css', [], null);
-    wp_enqueue_style('myshop-style', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
-    wp_enqueue_style('main-style', get_template_directory_uri() . '/assets/css/style.css', ['bootstrap'], null);
+
+    // Bootstrap CSS (tải từ file của theme)
+    wp_enqueue_style('bootstrap', get_template_directory_uri() . '/assets/css/bootstrap.min.css', [], '5.0.0');
+
+    // CSS chính của theme
+    wp_enqueue_style('main-style', get_template_directory_uri() . '/assets/css/style.css', ['bootstrap'], '1.0.0');
     wp_enqueue_style('woocommerce-custom', get_template_directory_uri() . '/assets/css/woocommerce-custom.css', ['woocommerce-general'], null);
 
     // Tải file CSS tùy chỉnh chung
     wp_enqueue_style('custom-style', get_template_directory_uri() . '/assets/css/custom.css', ['main-style'], '1.0.1');
 
     // Chỉ tải file CSS cho phân trang trên trang chủ, trang lưu trữ hoặc trang tìm kiếm
-    if ( is_home() || is_archive() || is_search() || is_page_template('template-blog.php') ) {
+    if (is_home() || is_archive() || is_search() || is_page_template('template-blog.php')) {
         wp_enqueue_style('9shop-custom-pagination', get_template_directory_uri() . '/assets/css/custom-pagination.css', ['main-style'], '1.0.1');
     }
+
+    // Stylesheet gốc của theme (style.css) - nên tải cuối cùng
+    wp_enqueue_style('myshop-style', get_stylesheet_uri(), ['main-style'], wp_get_theme()->get('Version'));
 
 
     // --- JS ---
     wp_enqueue_script('jquery');
-    wp_enqueue_script('bootstrap', get_template_directory_uri() . '/assets/js/bootstrap.bundle.min.js', ['jquery'], '5.3.0', true);
+    // Bootstrap JS - Rất quan trọng: khai báo 'jquery' là phụ thuộc
+    wp_enqueue_script('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js', ['jquery'], '5.0.0', true);
     wp_enqueue_script('easing', get_template_directory_uri() . '/assets/lib/easing/easing.min.js', ['jquery'], null, true);
     wp_enqueue_script('waypoints', get_template_directory_uri() . '/assets/lib/waypoints/waypoints.min.js', ['jquery'], null, true);
     wp_enqueue_script('counterup', get_template_directory_uri() . '/assets/lib/counterup/counterup.min.js', ['jquery'], null, true);
