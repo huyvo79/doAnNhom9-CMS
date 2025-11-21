@@ -1,7 +1,8 @@
 <?php
 /**
  * Template Part: WooCommerce Product Grid
- * Hiển thị danh sách sản phẩm dạng grid (giữ nguyên HTML cũ)
+ * Hiển thị danh sách sản phẩm dạng grid và list (tabbed interface).
+ * SỬ DỤNG TRUY VẤN CHÍNH (MAIN QUERY) ĐÃ ĐƯỢC CHỈNH SỬA BỞI functions.php
  */
 
 if (!class_exists('WooCommerce')) {
@@ -9,43 +10,66 @@ if (!class_exists('WooCommerce')) {
     return;
 }
 
-$paged = get_query_var('paged') ? get_query_var('paged') : 1;
+// KHÔNG CẦN: Logic Truy Vấn Sản Phẩm (Đã chuyển sang functions.php)
+// KHÔNG CẦN: $paged = ...
+// KHÔNG CẦN: $args = ...
+// KHÔNG CẦN: $query = new WP_Query($args);
 
-// --- Bắt đầu: Logic Lọc theo Danh mục Sản phẩm (Đã Thay Đổi) ---
-
-$args = array(
-    'post_type' => 'product',
-    'posts_per_page' => 9,
-    'paged' => $paged,
-);
-
-// Lấy thông tin về trang hiện tại (nếu là trang lưu trữ danh mục/tag)
+// Dữ liệu danh mục vẫn lấy từ truy vấn chính
 $current_term = get_queried_object();
-$category_title = ''; // Khởi tạo biến lưu tiêu đề
+$category_title = '';
 
-// Kiểm tra xem trang hiện tại có phải là trang lưu trữ danh mục sản phẩm (product_cat) hay không
 if ($current_term && is_a($current_term, 'WP_Term') && $current_term->taxonomy == 'product_cat') {
-
-    // Nếu là trang danh mục, thêm điều kiện tax_query vào $args để lọc sản phẩm
-    $args['tax_query'] = array(
-        array(
-            'taxonomy' => 'product_cat',
-            'field' => 'slug', // Lọc theo slug của danh mục
-            'terms' => $current_term->slug, // Slug của danh mục hiện tại
-        ),
-    );
-
-    // Lấy tiêu đề danh mục để hiển thị
     $category_title = $current_term->name;
 }
 
-// --- Kết thúc: Logic Lọc theo Danh mục Sản phẩm ---
-
-// Sử dụng new WP_Query với $args đã cập nhật
-$query = new WP_Query($args);
-
-if ($query->have_posts()):
+// Bắt đầu kiểm tra Truy vấn Chính
+if (have_posts()):
     ?>
+    <style>
+        /* ... CSS giữ nguyên ... */
+        .product-item.list-view .product-new.list-view-badge {
+            position: absolute;
+            top: 0;
+            left: 10px;
+            z-index: 10;
+            background-color: orange;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* CSS cho paginate_links để trông giống giao diện Bootstrap */
+        .pagination-links a,
+        .pagination-links span {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 4px;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            color: #0d6efd;
+        }
+
+        .pagination-links .current {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+        .pagination-links .disabled {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+    </style>
+
     <div class="rounded mb-4 position-relative">
         <img src="<?php echo get_template_directory_uri(); ?>/assets/img/product-banner-3.jpg"
             class="img-fluid rounded w-100" style="height: 250px;" alt="Image">
@@ -57,14 +81,18 @@ if ($query->have_posts()):
         </div>
     </div>
 
-
     <div class="row g-4 align-items-center mb-4">
         <div class="col-xl-7">
-            <?php get_product_search_form(); ?>
+            <form method="get" class="input-group w-100 mx-auto d-flex" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
+                <input type="search" class="form-control p-3" name="s" value="<?php echo isset($_GET['s']) ? esc_attr($_GET['s']) : ''; ?>" placeholder="Tìm sản phẩm..." aria-describedby="search-icon-1">
+                <input type="hidden" name="post_type" value="product">
+                <button type="submit" class="input-group-text p-3" id="search-icon-1"><i class="fa fa-search"></i></button>
+            </form>
         </div>
         <div class="col-xl-3 text-end">
             <?php woocommerce_catalog_ordering(); ?>
         </div>
+
         <div class="col-lg-4 col-xl-2">
             <ul class="nav nav-pills d-inline-flex text-center py-2 px-2 rounded bg-light mb-4">
                 <li class="nav-item me-4">
@@ -82,122 +110,170 @@ if ($query->have_posts()):
     </div>
 
     <div class="tab-content">
+
         <div id="tab-5" class="tab-pane fade show active p-0">
             <div class="row g-4 product">
-                <?php while ($query->have_posts()):
-                    $query->the_post();
-                    global $product;
-                    $percentage = get_product_sale_percentage($product);
-
-                    $img = wp_get_attachment_image_src($product->get_image_id(), 'medium')[0] ?? wc_placeholder_img_src();
-                    $rating = wc_get_rating_html($product->get_average_rating());
-                    $price_html = $product->get_price_html();
-                    $cat_list = wc_get_product_category_list($product->get_id(), ', ');
-
-                    $img = wp_get_attachment_image_src($product->get_image_id(), 'medium')[0] ?? wc_placeholder_img_src();
-                    $rating = wc_get_rating_html($product->get_average_rating());
-                    $price_html = $product->get_price_html();
-                    $cat_list = wc_get_product_category_list($product->get_id(), ', ');
-                    ?>
-                    <div class="col-lg-4">
-                        <div class="product-item rounded wow fadeInUp" data-wow-delay="0.1s">
-                            <div class="product-item-inner border rounded">
-                                <div class="product-item-inner-item position-relative">
-                                    <a href="<?php the_permalink(); ?>">
-                                        <img src="<?php echo esc_url($img); ?>" class="img-fluid w-100 rounded-top"
-                                            alt="<?php the_title(); ?>">
-                                    </a>
-
-                                    <?php if ($product->is_on_sale() && $percentage): ?>
-                                        <div class="product-new"><?php echo esc_html($percentage); ?></div>
-                                    <?php else: ?>
-                                        <div class="product-new">New</div>
-                                    <?php endif; ?>
-
-                                    <div class="product-details">
-                                        <a href="<?php the_permalink(); ?>"><i class="fa fa-eye fa-1x"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="text-center rounded-bottom p-4">
-                                    <a href="<?php the_permalink(); ?>"
-                                        class="d-block mb-2"><?php echo wp_kses_post($cat_list); ?></a>
-                                    <a href="<?php the_permalink(); ?>" class="d-block h4"><?php the_title(); ?></a>
-
-                                    <?php
-                                    if ($product->is_on_sale()) {
-                                        // 1. Hiển thị Giá Gạch ngang (Giá thường)
-                                        $regular_price = $product->get_regular_price();
-
-                                        // 2. Hiển thị Giá khuyến mãi/Giá hiện tại (sử dụng get_price_html để lấy giá đã được làm đẹp, nhưng đã loại bỏ phần gạch ngang)
-                                        echo '<span class="text-primary fs-5">' . $product->get_price_html() . '</span>';
-                                    } else {
-                                        // Nếu KHÔNG có khuyến mãi, chỉ hiển thị 1 Giá duy nhất (Giá hiện tại)
-                                        echo '<span class="text-primary fs-5">' . $product->get_price_html() . '</span>';
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-
-                            <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
-                                <?php woocommerce_template_loop_add_to_cart(array('class' => 'btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4')); ?>
-
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex">
-                                        <?php echo $rating ?: '<i class="fas fa-star text-primary"></i><i class="fas fa-star text-primary"></i><i class="fas fa-star text-primary"></i><i class="fas fa-star text-primary"></i><i class="fas fa-star"></i>'; ?>
-                                    </div>
-                                    <div class="d-flex">
-                                        <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3">
-                                            <span class="rounded-circle btn-sm-square border"><i
-                                                    class="fas fa-random"></i></span>
+                <?php
+                // Sử dụng vòng lặp truy vấn chính
+                if (have_posts()):
+                    while (have_posts()):
+                        the_post();
+                        global $product;
+                        $percentage = function_exists('get_product_sale_percentage') ? get_product_sale_percentage($product) : null;
+                        $img = wp_get_attachment_image_src($product->get_image_id(), 'medium')[0] ?? wc_placeholder_img_src();
+                        $rating = wc_get_rating_html($product->get_average_rating());
+                        $cat_list = wc_get_product_category_list($product->get_id(), ', ');
+                        ?>
+                        <div class="col-lg-4">
+                            <div class="product-item rounded wow fadeInUp" data-wow-delay="0.1s">
+                                <div class="product-item-inner border rounded">
+                                    <div class="product-item-inner-item position-relative">
+                                        <a href="<?php the_permalink(); ?>">
+                                            <img src="<?php echo esc_url($img); ?>" class="img-fluid w-100 rounded-top"
+                                                alt="<?php the_title(); ?>">
                                         </a>
-                                        <a href="#" class="text-primary d-flex align-items-center justify-content-center me-0">
-                                            <span class="rounded-circle btn-sm-square border"><i
-                                                    class="fas fa-heart"></i></span>
-                                        </a>
+
+                                        <?php if ($product->is_on_sale() && $percentage): ?>
+                                            <div class="product-new"><?php echo esc_html($percentage); ?></div>
+                                        <?php else: ?>
+                                            <div class="product-new">New</div>
+                                        <?php endif; ?>
+
+                                        <div class="product-details">
+                                            <a href="<?php the_permalink(); ?>"><i class="fa fa-eye fa-1x"></i></a>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center rounded-bottom p-4">
+                                        <a href="<?php the_permalink(); ?>"
+                                            class="d-block mb-2"><?php echo wp_kses_post($cat_list); ?></a>
+                                        <a href="<?php the_permalink(); ?>" class="d-block h4"><?php the_title(); ?></a>
+
+                                        <?php echo $product->get_price_html(); ?>
+                                    </div>
+
+                                </div>
+                                <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
+                                    <?php woocommerce_template_loop_add_to_cart(array('class' => 'btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4')); ?>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex">
+                                            <?php echo $rating ?: '<i class="fas fa-star text-primary"></i><i class="fas fa-star text-primary"></i><i class="fas fa-star text-primary"></i><i class="fas fa-star text-primary"></i><i class="fas fa-star"></i>'; ?>
+                                        </div>
+                                        <div class="d-flex">
+                                            <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3">
+                                                <span class="rounded-circle btn-sm-square border"><i
+                                                        class="fas fa-random"></i></span>
+                                            </a>
+                                            <a href="#" class="text-primary d-flex align-items-center justify-content-center me-0">
+                                                <span class="rounded-circle btn-sm-square border"><i
+                                                        class="fas fa-heart"></i></span>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                <?php endwhile; ?>
+                    <?php endwhile; endif; // Kết thúc vòng lặp truy vấn chính ?>
             </div>
-
-            <?php
-            // Điều chỉnh logic phân trang
-            $total_pages = $query->max_num_pages;
-            $current_page = max(1, get_query_var('paged'));
-
-            if ($total_pages > 1): ?>
-                <div class="pagination d-flex justify-content-center mt-5">
-
-                    <a class="rounded <?= $current_page == 1 ? 'disabled' : '' ?>"
-                        href="<?= $current_page == 1 ? '#' : get_pagenum_link($current_page - 1); ?>">
-                        &laquo;
-                    </a>
-
-                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <a href="<?= get_pagenum_link($i) ?>" class="rounded <?= $i == $current_page ? 'active' : '' ?>">
-                            <?= $i ?>
-                        </a>
-                    <?php endfor; ?>
-
-                    <a class="rounded <?= $current_page == $total_pages ? 'disabled' : '' ?>"
-                        href="<?= $current_page == $total_pages ? '#' : get_pagenum_link($current_page + 1); ?>">
-                        &raquo;
-                    </a>
-
-                </div>
-            <?php endif; ?>
-
         </div>
+
+        <div id="tab-6" class="tab-pane fade show p-0">
+            <div class="row g-4 product">
+                <?php
+                // Cần reset_postdata() để vòng lặp mới hiển thị từ đầu trang (chỉ khi có 2 vòng lặp liên tiếp)
+                rewind_posts();
+
+                // Sử dụng vòng lặp truy vấn chính lần thứ hai cho List View
+                if (have_posts()):
+                    while (have_posts()):
+                        the_post();
+                        global $product;
+                        $percentage = function_exists('get_product_sale_percentage') ? get_product_sale_percentage($product) : null;
+                        $img = wp_get_attachment_image_src($product->get_image_id(), 'thumbnail')[0] ?? wc_placeholder_img_src();
+                        $rating = wc_get_rating_html($product->get_average_rating());
+                        $cat_list = wc_get_product_category_list($product->get_id(), ', ');
+                        ?>
+                        <div class="col-12">
+                            <div class="product-item list-view rounded border p-3 wow fadeInUp" data-wow-delay="0.1s">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3">
+                                        <div class="position-relative">
+                                            <a href="<?php the_permalink(); ?>">
+                                                <img src="<?php echo esc_url($img); ?>" class="img-fluid w-100 rounded"
+                                                    alt="<?php the_title(); ?>">
+                                            </a>
+                                            <?php if ($product->is_on_sale() && $percentage): ?>
+                                                <div class="product-new list-view-badge"><?php echo esc_html($percentage); ?></div>
+                                                <?php else: ?>
+                                                <div class="product-new list-view-badge">New</div>
+                                            <?php endif; ?>
+                                            
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 text-start py-3 py-md-0">
+                                        <a href="<?php the_permalink(); ?>"
+                                            class="d-block mb-1 text-muted small"><?php echo wp_kses_post($cat_list); ?></a>
+                                        <a href="<?php the_permalink(); ?>" class="d-block h5"><?php the_title(); ?></a>
+
+                                        <div class="mb-2"><?php the_excerpt(); ?></div>
+
+                                        <div class="d-flex mb-2">
+                                            <?php echo $rating ?: '<i class="fas fa-star text-primary"></i><i class="fas fa-star text-primary"></i><i class="fas fa-star text-primary"></i><i class="fas fa-star text-primary"></i><i class="fas fa-star"></i>'; ?>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 text-center">
+                                        <div class="my-3 my-md-0">
+                                            <?php echo $product->get_price_html(); ?>
+                                        </div>
+                                        <?php woocommerce_template_loop_add_to_cart(array('class' => 'btn btn-primary border-secondary rounded-pill py-2 px-3')); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endwhile; endif; // Kết thúc vòng lặp truy vấn chính thứ hai ?>
+            </div>
+        </div>
+        <?php
+
+        // =======================================================
+        // PHÂN TRANG: SỬ DỤNG paginate_links() VỚI TRUY VẤN CHÍNH
+        // =======================================================
+    
+        // Trong truy vấn chính, $wp_query đã có sẵn và chứa thông tin tổng số trang chính xác.
+        global $wp_query;
+
+        if ($wp_query->max_num_pages > 1):
+            $big = 999999999;
+            $paged = max(1, get_query_var('paged'));
+
+            $pagination_links = paginate_links(array(
+                'base' => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+                'format' => '?paged=%#%',
+                'current' => $paged,
+                'total' => $wp_query->max_num_pages, // Sử dụng max_num_pages của $wp_query
+                'prev_text' => '&laquo;',
+                'next_text' => '&raquo;',
+                'type' => 'plain',
+            ));
+
+            if ($pagination_links) {
+                echo '<div class="pagination d-flex justify-content-center mt-5">';
+                echo '<div class="pagination-links">';
+                echo $pagination_links;
+                echo '</div>';
+                echo '</div>';
+            }
+        endif; ?>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <?php
 else:
     echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
 endif;
 
-// Quan trọng: Đặt lại dữ liệu bài viết sau khi sử dụng WP_Query tùy chỉnh
-wp_reset_postdata();
+// KHÔNG CẦN wp_reset_postdata() hay wp_reset_query() vì ta đang sử dụng truy vấn chính.
 ?>
