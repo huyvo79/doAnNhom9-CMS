@@ -161,7 +161,7 @@ function my_custom_quantity_buttons_script()
             function handle_quantity_change($button, $input, direction) {
                 var value = parseInt($input.val(), 10);
                 // Đảm bảo step luôn là 1 nếu không được định nghĩa rõ
-                var step = parseInt($input.attr('step'), 10) || 1; 
+                var step = parseInt($input.attr('step'), 10) || 1;
                 var min = parseInt($input.attr('min'), 10) || 0;
                 var max_attr = $input.attr('max');
                 var max = (max_attr !== '' && max_attr !== undefined) ? parseInt(max_attr, 10) : Infinity;
@@ -183,10 +183,10 @@ function my_custom_quantity_buttons_script()
                 // Sau khi thay đổi giá trị, chúng ta gọi trigger('change')
                 // để WooCommerce nhận biết sự thay đổi.
                 // Tuy nhiên, việc này lại gây ra lỗi tăng 2.
-                
+
                 // Giải pháp: Thay vì dùng .trigger('change'), ta chỉ thay đổi giá trị.
                 // Riêng trên trang giỏ hàng, ta cần kích hoạt sự kiện để nút "Update Cart" sáng lên.
-                
+
                 // Nếu đang ở trang giỏ hàng, kích hoạt sự kiện change để Woo nhận biết
                 if ($('body').hasClass('woocommerce-cart')) {
                     $input.trigger('change');
@@ -322,8 +322,9 @@ function custom_blog_sidebar()
 }
 add_action('widgets_init', 'custom_blog_sidebar');
 
-function custom_single_blog_styles() {
-    if ( (is_single() && 'post' === get_post_type()) || is_home() || is_archive() || is_page_template('template-blog.php') ) {
+function custom_single_blog_styles()
+{
+    if ((is_single() && 'post' === get_post_type()) || is_home() || is_archive() || is_page_template('template-blog.php')) {
         wp_enqueue_style(
             'single-blog-style',
             get_template_directory_uri() . '/assets/css/single-blog.css',
@@ -338,25 +339,28 @@ add_action('wp_enqueue_scripts', 'custom_single_blog_styles');
 /**
  * template page-order
  */
-function myshop_register_order_template( $templates ) {
+function myshop_register_order_template($templates)
+{
     $templates['page-order.php'] = 'Trang Đơn Hàng (9shop Orders)';
     return $templates;
 }
-add_filter( 'theme_page_templates', 'myshop_register_order_template' );
+add_filter('theme_page_templates', 'myshop_register_order_template');
 
 /**
  * template page-coupon
  */
-function myshop_register_custom_templates( $templates ) {
+function myshop_register_custom_templates($templates)
+{
     $templates['page-order.php'] = 'Trang Đơn Hàng (9shop Orders)'; // Giữ lại template cũ
     $templates['page-coupon.php'] = 'Trang Mã Giảm Giá (9shop Coupons)'; // Thêm template mới
     $templates['page-9shop.php'] = 'Home'; // Thêm template mới
     $templates['blog.php'] = 'Blog'; // Thêm template mới
     return $templates;
 }
-add_filter( 'theme_page_templates', 'myshop_register_custom_templates' );
+add_filter('theme_page_templates', 'myshop_register_custom_templates');
 
-function get_product_sale_percentage($product) {
+function get_product_sale_percentage($product)
+{
     if (!$product->is_on_sale()) {
         return '';
     }
@@ -369,7 +373,7 @@ function get_product_sale_percentage($product) {
         $regular_price = (float) $product->get_variation_regular_price('min', true);
         $sale_price = (float) $product->get_variation_sale_price('min', true);
     }
-    
+
     // Nếu giá không hợp lệ, trả về rỗng
     if ($regular_price <= 0 || $regular_price <= $sale_price) {
         return '';
@@ -405,3 +409,81 @@ add_action( 'pre_get_posts', 'custom_archive_products_query' );
 
 
  
+function myshop_register_category_menu()
+{
+    register_nav_menus(array(
+        'all_categories' => __('All Categories Menu (Danh mục Header)', 'myshop'),
+    ));
+}
+add_action('after_setup_theme', 'myshop_register_category_menu');
+
+/**
+ * Custom Walker: Item là thẻ <a> trực tiếp, không dùng div bao ngoài
+ */
+class MyShop_Category_Walker extends Walker_Nav_Menu
+{
+
+    // 1. Mở thẻ <ul> cho menu con (Giữ nguyên)
+    function start_lvl(&$output, $depth = 0, $args = null)
+    {
+        $output .= '<ul class="dropdown-menu custom-sub-menu">';
+    }
+
+    // 2. Mở thẻ <li> và nội dung bên trong
+    function start_el(&$output, $item, $depth = 0, $args = null, $id = 0)
+    {
+        $classes = empty($item->classes) ? array() : (array) $item->classes;
+
+        // Kiểm tra xem item này có con không
+        $has_children = in_array('menu-item-has-children', $classes);
+
+        // Thêm class 'dropdown' cho li nếu có con
+        if ($has_children) {
+            $classes[] = 'dropdown';
+        }
+
+        $class_names = join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));
+        $class_names = $class_names ? ' class="' . esc_attr($class_names) . '"' : '';
+
+        $output .= '<li' . $class_names . '>';
+
+        // --- XỬ LÝ THẺ A (Thay đổi từ đây) ---
+
+        $atts = array();
+        $atts['title'] = !empty($item->attr_title) ? $item->attr_title : '';
+        $atts['target'] = !empty($item->target) ? $item->target : '';
+        $atts['rel'] = !empty($item->xfn) ? $item->xfn : '';
+        $atts['href'] = !empty($item->url) ? $item->url : '';
+
+        // QUAN TRỌNG: Chuyển class style từ thẻ div cũ vào thẳng thẻ a
+        // Thêm class 'text-body' hoặc class màu chữ của bạn nếu cần để giữ màu
+        $atts['class'] = 'categories-bars-item d-flex justify-content-between align-items-center text-dark'; // Thêm text-dark hoặc text-reset
+
+        $atts = apply_filters('nav_menu_link_attributes', $atts, $item, $args, $depth);
+
+        $attributes = '';
+        foreach ($atts as $attr => $value) {
+            if (!empty($value)) {
+                $value = ('href' === $attr) ? esc_url($value) : esc_attr($value);
+                $attributes .= ' ' . $attr . '="' . $value . '"';
+            }
+        }
+
+        $title = apply_filters('the_title', $item->title, $item->ID);
+
+        // Mở thẻ a
+        $output .= '<a' . $attributes . '>';
+
+        // 1. In tiêu đề
+        $output .= $title;
+
+        // 2. In icon (Nằm TRONG thẻ a để Flexbox đẩy sang phải)
+        if ($has_children) {
+            $output .= '<i class="fa fa-angle-right ms-2 text-muted" style="font-size: 0.8rem;"></i>';
+        }
+
+        // Đóng thẻ a
+        $output .= '</a>';
+    }
+}
+
