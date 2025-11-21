@@ -83,10 +83,11 @@ if (have_posts()):
 
     <div class="row g-4 align-items-center mb-4">
         <div class="col-xl-7">
-            <div class="input-group w-100 mx-auto d-flex">
-                <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-            </div>
+            <form method="get" class="input-group w-100 mx-auto d-flex" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
+                <input type="search" class="form-control p-3" name="s" value="<?php echo isset($_GET['s']) ? esc_attr($_GET['s']) : ''; ?>" placeholder="Tìm sản phẩm..." aria-describedby="search-icon-1">
+                <input type="hidden" name="post_type" value="product">
+                <button type="submit" class="input-group-text p-3" id="search-icon-1"><i class="fa fa-search"></i></button>
+            </form>
         </div>
         <div class="col-xl-3 text-end">
             <?php woocommerce_catalog_ordering(); ?>

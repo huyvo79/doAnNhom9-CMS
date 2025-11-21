@@ -40,15 +40,21 @@
     <div class="price mb-4">
         <h4 class="mb-2">Price</h4>
         <form method="get" action="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">
-            <input type="range" class="form-range w-100" id="rangeInput" name="max_price" min="1000000" max="10000000" value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : 0; ?>" oninput="amount.value=rangeInput.value">
-            <output id="amount" name="amount" for="rangeInput"><?php echo isset($_GET['max_price']) ? esc_html($_GET['max_price']) : 0; ?></output>
+            <input type="range" class="form-range w-100" id="rangeInput" name="max_price" min="3000000" max="30000000" value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : 0; ?>" oninput="amount.value=formatVND(rangeInput.value)">
+            <output id="amount" name="amount" for="rangeInput"><?php echo isset($_GET['max_price']) ? number_format($_GET['max_price'], 0, ',', '.') . '₫' : '0₫'; ?></output>
+            <script>
+            function formatVND(val) {
+                val = parseInt(val);
+                if (isNaN(val)) return '0₫';
+                return val.toLocaleString('vi-VN') + '₫';
+            }
+            </script>
             <button type="submit" class="btn btn-primary btn-sm mt-2 w-100">Filter</button>
         </form>
     </div>
 
     <!-- 🔹 Color Attribute Filter -->
     <div class="product-color mb-3">
-        <h4>Select By Color</h4>
         <ul class="list-unstyled">
             <?php
             $colors = get_terms(array(
