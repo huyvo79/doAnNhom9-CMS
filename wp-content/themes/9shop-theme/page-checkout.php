@@ -6,13 +6,7 @@ Template Name: Trang Thanh Toán (9shop Checkout)
 get_header();  
 ?>
 
-    <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s"><?php the_title(); ?></h1>
-        <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
-            <li class="breadcrumb-item"><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li>
-            <li class="breadcrumb-item active text-white">Checkout</li>
-        </ol>
-    </div>
+    <?php get_template_part('template-parts/breadcrumb'); ?>
 
     <div class="container-fluid px-0">
         <div class="row g-0">
