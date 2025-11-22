@@ -83,11 +83,11 @@
                     <div class="footer-item d-flex flex-column">
                         <h4 class="text-primary mb-4">Information</h4>
                         <a href="<?php echo get_page_link(get_page_by_path('about-us')); ?>" class=""><i class="fas fa-angle-right me-2"></i> About Us</a>
-                        <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Delivery infomation</a>
+                        <a href="<?php echo get_page_link(get_page_by_path('delivery')); ?>" class=""><i class="fas fa-angle-right me-2"></i> Delivery infomation</a>
                         <a href="<?php echo get_page_link(get_page_by_path('return-policy')); ?>" class=""><i class="fas fa-angle-right me-2"></i> Return policy</a>
-                        <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
+                        <a href="<?php echo get_page_link(get_page_by_path('terms')); ?>" class=""><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
                         <a href="<?php echo get_page_link(get_page_by_path('policy-warranty')); ?>" class=""><i class="fas fa-angle-right me-2"></i> Warranty</a>
-                        <a href="" class=""><i class="fas fa-angle-right me-2"></i> FAQ</a>
+                        <a href="<?php echo get_page_link(get_page_by_path('faq')); ?>" class=""><i class="fas fa-angle-right me-2"></i> FAQ</a>
                         <a href="<?php echo get_page_link(get_page_by_path('recruitment')); ?>" class=""><i class="fas fa-angle-right me-2"></i> Recruitment</a>
                     </div>
                 </div>
@@ -95,12 +95,10 @@
                     <div class="footer-item d-flex flex-column">
                         <h4 class="text-primary mb-4">Extras</h4>
                         <!-- <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Brands</a> -->
-                        <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Gift Vouchers</a>
+                        <a href="<?php echo get_page_link(get_page_by_path('coupon')); ?>" class=""><i class="fas fa-angle-right me-2"></i>Vouchers</a>
                         <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Affiliates</a>
                         <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Wishlist</a>
-                        <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Order History</a>
-                        <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Track Your Order</a>
-                        <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Track Your Order</a>
+                        <a href="<?php echo get_page_link(get_page_by_path('order')); ?>" class=""><i class="fas fa-angle-right me-2"></i> Track Your Order</a>
                     </div>
                 </div>
             </div>
