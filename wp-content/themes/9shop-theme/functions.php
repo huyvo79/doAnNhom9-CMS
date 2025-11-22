@@ -486,4 +486,270 @@ class MyShop_Category_Walker extends Walker_Nav_Menu
         $output .= '</a>';
     }
 }
+/**
+ * 1. Đăng ký các vị trí Menu
+ */
+function shop9_register_menus() {
+    register_nav_menus(
+        array(
+            'primary_menu'   => __( 'Menu Chính (Ngang)', '9shop-theme' ),
+            'all_categories' => __( 'Menu Danh mục (Dọc)', '9shop-theme' ),
+            'top_bar_menu'   => __( 'Menu Top Bar (Nhỏ)', '9shop-theme' ),
+        )
+    );
+}
+add_action( 'init', 'shop9_register_menus' );
+
+/**
+ * 2. Hỗ trợ Custom Logo
+ */
+function shop9_theme_support() {
+    add_theme_support( 'custom-logo', array(
+        'height'      => 80,
+        'width'       => 300,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ) );
+}
+add_action( 'after_setup_theme', 'shop9_theme_support' );
+
+/**
+ * 3. Tạo ô nhập Hotline trong Admin > Appearance > Customize
+ */
+function shop9_customize_register( $wp_customize ) {
+    // Tạo Section mới tên là "Thông tin Cửa hàng"
+    $wp_customize->add_section('shop_info_settings', array(
+        'title'    => __('Số điện thoại hỗ trợ', '9shop-theme'),
+        'priority' => 30,
+    ));
+
+    // Tạo Setting Hotline
+    $wp_customize->add_setting('shop_hotline', array(
+        'default'   => '(+84) 123 456 7890',
+        'transport' => 'refresh', // refresh để thấy thay đổi ngay
+    ));
+
+    // Tạo Control (Ô nhập liệu)
+    $wp_customize->add_control('shop_hotline', array(
+        'label'    => __('Số điện thoại Hotline', '9shop-theme'),
+        'section'  => 'shop_info_settings',
+        'type'     => 'text',
+        'description' => 'Số này sẽ hiện ở Top Bar và nút cạnh Menu.',
+    ));
+}
+add_action('customize_register', 'shop9_customize_register');
+
+function shop9_carousel_customizer($wp_customize) {
+    // 1. Tạo Section
+    $wp_customize->add_section('home_carousel_settings', array(
+        'title'    => __('Cài đặt Carousel Trang chủ', '9shop-theme'),
+        'priority' => 35,
+    ));
+
+    // ====================================================
+    // A. LẤY DỮ LIỆU CHO CÁC Ô CHỌN (SELECT)
+    // ====================================================
+    
+    // 1. Lấy danh sách Danh mục (Cho Slider trái)
+    $cat_choices = array('' => '-- Mặc định: Nổi bật --');
+    if (taxonomy_exists('product_cat')) {
+        $categories = get_terms(array('taxonomy' => 'product_cat', 'hide_empty' => false));
+        if (!empty($categories) && !is_wp_error($categories)) {
+            foreach ($categories as $category) {
+                $cat_choices[$category->slug] = $category->name;
+            }
+        }
+    }
+
+    // 2. Lấy danh sách Sản phẩm (Cho Banner phải)
+    // Lưu ý: Mình giới hạn lấy 50 sản phẩm mới nhất để web đỡ nặng
+    $prod_choices = array('' => '-- Chọn sản phẩm để quảng cáo --');
+    $products = get_posts(array(
+        'post_type' => 'product', 
+        'numberposts' => 50, 
+        'post_status' => 'publish'
+    ));
+    if ($products) {
+        foreach ($products as $prod) {
+            $prod_choices[$prod->ID] = $prod->post_title;
+        }
+    }
+
+    // ====================================================
+    // B. CÀI ĐẶT SLIDER (TRÁI) - GIỮ NGUYÊN
+    // ====================================================
+    $wp_customize->add_setting('carousel_cat_slug', array('default' => ''));
+    $wp_customize->add_control('carousel_cat_slug', array(
+        'label'       => __('Chọn Danh mục cho Slider', '9shop-theme'),
+        'section'     => 'home_carousel_settings',
+        'type'        => 'select',
+        'choices'     => $cat_choices,
+    ));
+
+    // ====================================================
+    // C. CÀI ĐẶT BANNER (PHẢI) - NÂNG CẤP
+    // ====================================================
+
+    // 1. Chọn sản phẩm (Thay vì nhập ID)
+    $wp_customize->add_setting('banner_product_id', array('default' => ''));
+    $wp_customize->add_control('banner_product_id', array(
+        'label'       => __('Chọn Sản phẩm Banner', '9shop-theme'),
+        'description' => __('Chọn sản phẩm để tự động lấy tên, giá và hình ảnh.', '9shop-theme'),
+        'section'     => 'home_carousel_settings',
+        'type'        => 'select', // <--- Đã đổi thành Select
+        'choices'     => $prod_choices,
+    ));
+
+    // 2. Link tùy chỉnh (Nếu muốn dẫn đi chỗ khác)
+    $wp_customize->add_setting('banner_custom_link', array('default' => ''));
+    $wp_customize->add_control('banner_custom_link', array(
+        'label'       => __('Link tùy chỉnh (Tùy chọn)', '9shop-theme'),
+        'description' => __('Nếu điền ô này, web sẽ ưu tiên dùng link này thay vì link sản phẩm.', '9shop-theme'),
+        'section'     => 'home_carousel_settings',
+        'type'        => 'url',
+    ));
+
+    // 3. Ảnh nền Banner
+    $wp_customize->add_setting('banner_bg_image');
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'banner_bg_image', array(
+        'label'    => __('Ảnh nền Banner', '9shop-theme'),
+        'section'  => 'home_carousel_settings',
+    )));
+
+    // 4. Dòng chữ Offer
+    $wp_customize->add_setting('banner_offer_text', array('default' => 'Save $48.00'));
+    $wp_customize->add_control('banner_offer_text', array(
+        'label'    => __('Badge giảm giá (nhỏ)', '9shop-theme'),
+        'section'  => 'home_carousel_settings',
+        'type'     => 'text',
+    ));
+
+    // 5. Tiêu đề Offer
+    $wp_customize->add_setting('banner_offer_label', array('default' => 'Special Offer'));
+    $wp_customize->add_control('banner_offer_label', array(
+        'label'    => __('Tiêu đề Offer (vàng)', '9shop-theme'),
+        'section'  => 'home_carousel_settings',
+        'type'     => 'text',
+    ));
+}
+add_action('customize_register', 'shop9_carousel_customizer');
+add_action('customize_register', 'shop9_carousel_customizer');
+function add_bootstrap_classes_to_nav_menu( $atts, $item, $args ) {
+    // Kiểm tra nếu là Menu Chính (primary_menu)
+    if ( property_exists($args, 'theme_location') && $args->theme_location == 'primary_menu' ) {
+        // Thêm class 'nav-item nav-link' vào thẻ <a>
+        $class = "nav-item nav-link";
+        
+        // Nếu là trang hiện tại thì thêm class 'active' để sáng lên
+        if (in_array('current-menu-item', $item->classes)) {
+            $class .= " active";
+        }
+        
+        // Gộp vào các class cũ (nếu có)
+        $atts['class'] = (isset($atts['class']) ? $atts['class'] . ' ' : '') . $class;
+    }
+    return $atts;
+}
+add_filter( 'nav_menu_link_attributes', 'add_bootstrap_classes_to_nav_menu', 10, 3 );
+
+function shop9_service_customizer($wp_customize) {
+    // 1. Tạo Section
+    $wp_customize->add_section('home_service_settings', array(
+        'title'    => __('Cài đặt Dịch vụ (Services)', '9shop-theme'),
+        'priority' => 40, // Nằm dưới phần Carousel
+    ));
+
+    // 2. Danh sách dữ liệu mặc định (để không bị trống khi mới cài)
+    $defaults = array(
+        1 => array('icon' => 'fa fa-sync-alt',       'title' => 'Free Return',        'desc' => '30 days money back guarantee!'),
+        2 => array('icon' => 'fab fa-telegram-plane', 'title' => 'Free Shipping',      'desc' => 'Free shipping on all order'),
+        3 => array('icon' => 'fas fa-life-ring',      'title' => 'Support 24/7',       'desc' => 'We support online 24 hrs a day'),
+        4 => array('icon' => 'fas fa-credit-card',    'title' => 'Receive Gift Card',  'desc' => 'Recieve gift all over oder $50'),
+        5 => array('icon' => 'fas fa-lock',           'title' => 'Secure Payment',     'desc' => 'We Value Your Security'),
+        6 => array('icon' => 'fas fa-blog',           'title' => 'Online Service',     'desc' => 'Free return products in 30 days'),
+    );
+
+    // 3. Dùng vòng lặp tạo 6 bộ cài đặt
+    for ($i = 1; $i <= 6; $i++) {
+        
+        // --- TIÊU ĐỀ PHÂN CÁCH ---
+        $wp_customize->add_setting("service_header_$i", array('default' => ''));
+        $wp_customize->add_control(new WP_Customize_Control($wp_customize, "service_header_$i", array(
+            'label'    => "=== DỊCH VỤ SỐ $i ===",
+            'section'  => 'home_service_settings',
+            'settings' => "service_header_$i", // Dummy setting
+            'type'     => 'hidden' 
+        )));
+
+        // 1. Icon (Nhập class FontAwesome)
+        $wp_customize->add_setting("service_icon_$i", array('default' => $defaults[$i]['icon']));
+        $wp_customize->add_control("service_icon_$i", array(
+            'label'       => "Icon số $i (Class)",
+            'description' => 'Ví dụ: fas fa-home, fab fa-facebook',
+            'section'     => 'home_service_settings',
+            'type'        => 'text',
+        ));
+
+        // 2. Tiêu đề
+        $wp_customize->add_setting("service_title_$i", array('default' => $defaults[$i]['title']));
+        $wp_customize->add_control("service_title_$i", array(
+            'label'       => "Tiêu đề số $i",
+            'section'     => 'home_service_settings',
+            'type'        => 'text',
+        ));
+
+        // 3. Mô tả
+        $wp_customize->add_setting("service_desc_$i", array('default' => $defaults[$i]['desc']));
+        $wp_customize->add_control("service_desc_$i", array(
+            'label'       => "Mô tả số $i",
+            'section'     => 'home_service_settings',
+            'type'        => 'text',
+        ));
+    }
+}
+add_action('customize_register', 'shop9_service_customizer');
+
+function shop9_offer_section_customizer($wp_customize) {
+    // 1. Tạo Section
+    $wp_customize->add_section('home_offer_section_settings', array(
+        'title'    => __('Cài đặt Box Ưu đãi (Offer)', '9shop-theme'),
+        'priority' => 45, // Nằm dưới phần Service
+    ));
+
+    // 2. Lấy danh sách Sản phẩm cho Dropdown (Giới hạn 50 SP mới nhất)
+    $prod_choices = array('' => '-- Tự động lấy SP đang Sale --');
+    
+    // Chỉ chạy khi có WooCommerce
+    if (class_exists('WooCommerce')) {
+        $products = get_posts(array(
+            'post_type'   => 'product', 
+            'numberposts' => 50, 
+            'post_status' => 'publish'
+        ));
+        if ($products) {
+            foreach ($products as $prod) {
+                $prod_choices[$prod->ID] = $prod->post_title;
+            }
+        }
+    }
+
+    // --- CÀI ĐẶT SẢN PHẨM 1 ---
+    $wp_customize->add_setting('offer_prod_1', array('default' => ''));
+    $wp_customize->add_control('offer_prod_1', array(
+        'label'       => __('Chọn Sản phẩm Ưu đãi #1', '9shop-theme'),
+        'section'     => 'home_offer_section_settings',
+        'type'        => 'select',
+        'choices'     => $prod_choices,
+    ));
+
+    // --- CÀI ĐẶT SẢN PHẨM 2 ---
+    $wp_customize->add_setting('offer_prod_2', array('default' => ''));
+    $wp_customize->add_control('offer_prod_2', array(
+        'label'       => __('Chọn Sản phẩm Ưu đãi #2', '9shop-theme'),
+        'section'     => 'home_offer_section_settings',
+        'type'        => 'select',
+        'choices'     => $prod_choices,
+    ));
+}
+add_action('customize_register', 'shop9_offer_section_customizer');
 
