@@ -66,7 +66,7 @@ get_header();
                             <h5 class="text-secondary mb-3">Giảm 20%</h5>
                             <p class="text-muted mb-3">Áp dụng cho mọi đơn hàng</p>
                             <div class="d-flex align-items-center justify-content-between bg-white p-2 rounded">
-                                <span class="text-dark fw-bold" id="couponCode2">3C85PD4X</span>
+                                <span class="text-dark fw-bold" id="couponCode2">ACEOI</span>
                                 <button class="btn btn-sm btn-secondary rounded-pill px-3 copy-btn"
                                     data-clipboard-target="#couponCode2">Sao Chép</button>
                             </div>
