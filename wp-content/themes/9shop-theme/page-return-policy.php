@@ -18,7 +18,7 @@ get_header(); ?>
             <div class="text-center p-4 bg-light rounded shadow-sm">
                 <i class="fas fa-sync-alt fa-3x text-primary mb-3"></i>
                 <h5>30 Ngày Đổi Trả</h5>
-                <p>Máy lỗi do nhà sản xuất</p>
+                <p>Máy lỗi  do nhà sản xuất</p>
             </div>
         </div>
         <div class="col-md-4">
