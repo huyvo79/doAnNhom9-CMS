@@ -1265,3 +1265,4 @@ function shop9_404_customizer($wp_customize) {
     ));
 }
 add_action('customize_register', 'shop9_404_customizer');
+
