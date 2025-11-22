@@ -131,14 +131,7 @@ get_header();
 </style>
 
 <!-- Single Page Header start -->
-<div class="container-fluid page-header py-5 mb-5">
-    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-        <h1 class="display-6 text-white"><?php the_title(); ?></h1>
-    </div>
-    <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
-        <?php woocommerce_breadcrumb(); // Hoặc bạn có thể dùng breadcrumb khác nếu muốn ?>
-    </ol>
-</div>
+<?php get_template_part('template-parts/breadcrumb'); ?>
 <!-- Single Page Header End -->
 
 <!-- Contact Start -->
