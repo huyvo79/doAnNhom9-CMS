@@ -1796,3 +1796,246 @@
         /* Mobile thì không cần sticky */
     }
 }
+
+/* 1. Tùy chỉnh Container tổng */
+.cwginstock-subscribe-form {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    max-width: 100%;
+    /* Đảm bảo không bị tràn trên mobile */
+}
+
+/* --- FIX LỖI TIÊU ĐỀ MÀU TRẮNG --- */
+.cwginstock-subscribe-form .cwginstock-panel-heading h4 {
+    color: #333333 !important;
+    /* Chuyển thành màu đen xám */
+    text-shadow: none !important;
+    /* Xóa bóng chữ (nếu có) cho dễ đọc */
+}
+
+/* 2. Biến cái khung (Panel) cũ kỹ thành Card hiện đại */
+.cwginstock-subscribe-form .cwginstock-panel-primary {
+    border: 1px solid #e5e5e5 !important;
+    /* Viền mỏng nhẹ */
+    border-radius: 12px !important;
+    /* Bo góc mềm mại */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    /* Đổ bóng nhẹ tạo chiều sâu */
+    background-color: #fff;
+    overflow: hidden;
+    /* Để nội dung con không chọc ra ngoài góc bo */
+}
+
+/* 3. Tùy chỉnh phần Tiêu đề (Heading) */
+.cwginstock-subscribe-form .cwginstock-panel-heading {
+    background-color: #f8f9fa !important;
+    /* Màu nền xám trắng hiện đại */
+    border-bottom: 1px solid #eee !important;
+    padding: 15px !important;
+    color: #333 !important;
+    /* Màu chữ đen xám */
+}
+
+/* Chỉnh font chữ tiêu đề */
+.cwginstock-subscribe-form .cwginstock-panel-heading h4 {
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    margin: 0 !important;
+    text-transform: uppercase;
+    /* In hoa tiêu đề cho sang */
+    letter-spacing: 0.5px;
+}
+
+/* 4. Tùy chỉnh phần Body (Chứa ô nhập liệu) */
+.cwginstock-subscribe-form .cwginstock-panel-body {
+    padding: 20px !important;
+}
+
+/* --- CHỈNH CÁC Ô INPUT BÊN TRONG --- */
+/* Vì trong ảnh ko thấy ruột class input, mình dùng selector cấp con để tóm nó */
+
+/* Ô nhập Email & Tên */
+.cwginstock-subscribe-form .cwginstock-panel-body input[type="text"],
+.cwginstock-subscribe-form .cwginstock-panel-body input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    /* Cách nút bấm ra */
+    outline: none;
+    transition: border 0.3s;
+}
+
+.cwginstock-subscribe-form .cwginstock-panel-body input:focus {
+    border-color: #007bff;
+    /* Màu xanh khi bấm vào nhập */
+}
+
+/* Nút Submit (Đăng ký) */
+.cwginstock-subscribe-form .cwginstock-panel-body button,
+.cwginstock-subscribe-form .cwginstock-panel-body input[type="submit"] {
+    width: 100%;
+    background-color: #333 !important;
+    /* Nền đen hoặc màu brand của bạn */
+    color: #fff !important;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform 0.2s;
+}
+
+/* Hiệu ứng khi di chuột vào nút */
+.cwginstock-subscribe-form .cwginstock-panel-body button:hover,
+.cwginstock-subscribe-form .cwginstock-panel-body input[type="submit"]:hover {
+    background-color: #000 !important;
+    transform: translateY(-2px);
+    /* Nút nổi lên xíu */
+}
+
+/* --- CSS CHO NÚT SUBMIT CỤ THỂ --- */
+input.cwg_popup_submit {
+    background-color: #333333 !important;
+    /* Màu nền đen (hoặc đổi thành mã màu brand của bạn) */
+    color: #ffffff !important;
+    /* Chữ màu trắng */
+    border: none !important;
+    /* Bỏ viền xấu xí mặc định */
+    border-radius: 6px !important;
+    /* Bo tròn góc */
+    padding: 12px 25px !important;
+    /* Khoảng cách lề trong cho nút to ra */
+    width: 50%;
+    /* Để nút dài full chiều ngang cho đẹp */
+
+    font-size: 14px !important;
+    font-weight: bold !important;
+    text-transform: uppercase;
+    /* In hoa chữ SUBSCRIBE NOW */
+    cursor: pointer;
+    /* Hiện bàn tay khi di chuột vào */
+    transition: all 0.3s ease;
+    /* Hiệu ứng mượt mà */
+    margin-top: 10px;
+    /* Cách ô nhập email ở trên ra một chút */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Đổ bóng nhẹ */
+}
+
+/* Hiệu ứng khi di chuột vào (Hover) */
+input.cwg_popup_submit:hover {
+    background-color: #000000 !important;
+    /* Đậm màu hơn khi hover */
+    transform: translateY(-2px);
+    /* Nút bay lên nhẹ 1 chút */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    /* Bóng đậm hơn */
+}
+
+/* --- MODERN RELATED PRODUCTS STYLE --- */
+
+/* --- STYLE CHO 5 CỘT (SUPER COMPACT) --- */
+
+/* 1. Thẻ Card tổng */
+.related-products-modern .modern-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 8px;
+    /* Padding mỏng lại */
+    transition: all 0.3s ease;
+}
+
+.related-products-modern .modern-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border-color: transparent;
+    transform: translateY(-3px);
+}
+
+/* 2. Khung Ảnh (Ép chiều cao nhỏ lại xíu cho cân đối với chiều ngang hẹp) */
+.related-products-modern .card-img-wrapper {
+    height: 160px !important;
+    /* 5 cột thì ảnh cao 160px là đẹp */
+    background: #fff;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.related-products-modern .card-img-wrapper img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    padding: 5px;
+    /* Thêm chút padding để ảnh không dính sát viền */
+    transition: transform 0.5s ease;
+}
+
+.related-products-modern .modern-card:hover img {
+    transform: scale(1.08);
+}
+
+/* 3. Typography (Font nhỏ gọn) */
+.related-products-modern .card-title a {
+    font-size: 13px !important;
+    /* Tên sản phẩm nhỏ lại */
+    line-height: 1.3;
+    display: block;
+}
+
+/* Cắt dòng tên sản phẩm */
+.text-truncate-2-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 34px;
+    /* Chiều cao cố định 2 dòng */
+}
+
+.related-products-modern .price {
+    font-size: 14px !important;
+    /* Giá tiền nhỏ lại */
+    margin-top: 4px;
+}
+
+.related-products-modern .price del {
+    font-size: 11px !important;
+}
+
+/* 4. Nút điều hướng (Prev/Next) */
+.related-products-modern .owl-nav button.owl-prev,
+.related-products-modern .owl-nav button.owl-next {
+    position: absolute;
+    top: 40%;
+    width: 35px;
+    height: 35px;
+    background: #fff !important;
+    border: 1px solid #eee !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    color: #333 !important;
+    font-size: 14px !important;
+    transition: all 0.3s;
+    line-height: 35px !important;
+}
+
+.related-products-modern .owl-nav button.owl-prev {
+    left: -15px;
+}
+
+.related-products-modern .owl-nav button.owl-next {
+    right: -15px;
+}
+
+.related-products-modern .owl-nav button:hover {
+    background: #333 !important;
+    color: #fff !important;
+    border-color: #333 !important;
+}
