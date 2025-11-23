@@ -234,25 +234,6 @@
                                 echo '<a href="#" class="nav-item nav-link">Gán Menu đi bạn ơi</a>';
                             }
                             ?>
-                            <a href="<?php echo home_url(); ?>" class="nav-item nav-link <?php if (is_front_page())
-                                   echo 'active'; ?>">Home</a>
-                            <a href="<?php echo esc_url(get_permalink($shop_page_id)); ?>" class="nav-item nav-link <?php if (is_shop() || is_product_category() || is_product_tag() || is_singular('product'))
-                                   echo 'active'; ?>">Shop</a>
-                            <a href="<?php echo esc_url($blog_page_url); ?>" class="nav-item nav-link <?php if (is_page($blog_page_id) || is_singular('post') || is_category() || is_tag())
-                                   echo 'active'; ?>">News</a>
-
-                            <!-- <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                                <div class="dropdown-menu m-0">
-                                    <a href="<?php echo wc_get_cart_url(); ?>" class="dropdown-item">Giỏ hàng (Cart)</a>
-                                    <a href="<?php echo wc_get_checkout_url(); ?>" class="dropdown-item">Thanh toán
-                                        (Checkout)</a>
-                                    <a href="<?php echo get_permalink(get_option('woocommerce_myaccount_page_id')); ?>"
-                                        class="dropdown-item">Tài khoản</a>
-                                </div> -->
-                            <a href="<?php echo esc_url(get_permalink($contact_page_id)); ?>" class="nav-item nav-link me-2 <?php if (is_page($contact_page_id))
-                                   echo 'active'; ?>">Contact
-                                us</a>
                         </div>
 
                         <div class="d-none d-lg-block ms-3">

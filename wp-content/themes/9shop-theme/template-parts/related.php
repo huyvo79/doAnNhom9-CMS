@@ -15,7 +15,7 @@ if ( empty( $related_ids ) ) return;
 $args = array(
     'post_type'      => 'product',
     'post_status'    => 'publish',
-    'posts_per_page' => 10, // Lấy 10 sản phẩm để slide mượt
+    'posts_per_page' => 8, // Lấy 10 sản phẩm để slide mượt
     'post__in'       => $related_ids,
     'orderby'        => 'post__in',
 );
@@ -100,9 +100,9 @@ if ( $loop->have_posts() ) : ?>
             navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'], // Icon mũi tên
             responsive: {
                 0: { items: 1 },    // Mobile: 1 cột
-                576: { items: 2 },  // Tablet nhỏ: 2 cột
-                992: { items: 3 },  // Laptop nhỏ: 3 cột
-                1200: { items: 4 }  // Desktop lớn: 4 cột (YÊU CẦU CỦA BẠN)
+                300: { items: 2 },  // Tablet nhỏ: 2 cột
+                600: { items: 3 },  // Laptop nhỏ: 3 cột
+                900: { items: 4 }  // Desktop lớn: 4 cột (YÊU CẦU CỦA BẠN)
             }
         });
     });
