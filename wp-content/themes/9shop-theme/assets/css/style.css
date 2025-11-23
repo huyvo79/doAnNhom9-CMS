@@ -521,7 +521,7 @@
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     transition: 0.5s;
-    width: 170px !important; 
+    width: 170px !important;
     height: 217px !important;
 }
 
@@ -946,45 +946,6 @@
     display: block;
 }
 
-/* Ẩn văn bản gốc và tạo không gian cho icon */
-.woocommerce-Reviews .comment-form-rating .stars a {
-    text-indent: -9999px;
-    overflow: hidden;
-    display: inline-block;
-    width: 1.8em;
-    height: 1.8em;
-    position: relative;
-    line-height: 1.8em;
-    vertical-align: middle;
-}
-
-/* Tạo icon sao mặc định (sao rỗng) */
-.woocommerce-Reviews .comment-form-rating .stars a::before {
-    content: '\f005' !important;
-    /* Mã icon sao */
-    font-family: "Font Awesome 6 Free", "FontAwesome" !important;
-    font-weight: 400 !important;
-    /* 400 = Regular (viền) */
-    font-size: 1.5rem !important;
-    color: #ccc !important;
-    position: absolute !important;
-    left: 0 !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    text-indent: 0 !important;
-    transition: color 0.2s ease, font-weight 0.2s ease !important;
-}
-
-/* Hiệu ứng khi hover (di chuột qua) */
-.woocommerce-Reviews .comment-form-rating .stars a:hover::before,
-.woocommerce-Reviews .comment-form-rating .stars a.active::before {
-    font-weight: 900 !important;
-    /* 900 = Solid (đặc) */
-    color: #FFD700 !important;
-    /* Màu vàng */
-}
-
-
 /* 6. STYLE Ô NHẬP LIỆU (TEXTAREA) */
 .woocommerce-Reviews #comment {
     width: 100%;
@@ -1144,5 +1105,724 @@
  */
 .woocommerce-tabs ul.wc-tabs li:not(.active) a:hover {
     color: #fda50d;
+}
 
+/* --- Custom Section Title Highlight --- */
+.section-title-highlight {
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px;
+    /* Khoảng trống cho đường gạch chân */
+}
+
+.section-title-highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    /* Chiều rộng của đường gạch chân */
+    height: 3px;
+    /* Độ dày của đường gạch chân */
+    background-color: var(--bs-primary);
+    /* Sử dụng màu chính của theme */
+}
+
+/* 1. Biến cái form thành một cái hộp dẻo (Flexbox) để căn chỉnh */
+.premium-search-wrap form.aws-search-form {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    background-color: #ffffff !important;
+
+    /* Bo góc cho cả cụm (Input + Button) */
+    border-radius: 8px !important;
+    /* Số càng lớn càng tròn, 8px là chuẩn công nghệ */
+
+    /* Viền mỏng bao quanh cả cụm */
+    border: 1px solid #d1d1d1 !important;
+
+    /* Cắt bỏ những phần lòi ra (để nút vuông không bị lòi ra khỏi góc bo) */
+    overflow: hidden !important;
+
+    /* Đổ bóng nhẹ */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 2. Xử lý ô nhập liệu (Bỏ viền riêng của nó đi) */
+.premium-search-wrap .aws-search-field {
+    flex-grow: 1 !important;
+    /* Chiếm hết khoảng trống còn lại */
+    border: none !important;
+    /* Xóa viền */
+    background: transparent !important;
+    /* Nền trong suốt */
+    height: 45px !important;
+    margin: 0 !important;
+    padding: 0 15px !important;
+    /* Cách lề trái một chút */
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    /* Không bo góc riêng lẻ nữa */
+}
+
+/* 3. Xử lý cái nút (Dính liền vào bên phải) */
+.premium-search-wrap .aws-search-btn {
+    width: 50px !important;
+    /* Độ rộng nút */
+    height: 45px !important;
+    /* Bằng chiều cao ô nhập */
+    border: none !important;
+    margin: 0 !important;
+    background-color: #fca311 !important;
+    /* Màu cam của bạn */
+    color: #fff !important;
+    border-radius: 0 !important;
+    /* Vuông vức để khớp với cạnh container */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hiệu ứng khi rê chuột vào nút */
+.premium-search-wrap .aws-search-btn:hover {
+    background-color: #e69500 !important;
+}
+
+/* Hiệu ứng khi Click vào ô tìm kiếm (Viền cả cụm đổi màu) */
+.premium-search-wrap form.aws-search-form:focus-within {
+    border-color: #fca311 !important;
+    box-shadow: 0 4px 12px rgba(252, 163, 17, 0.15) !important;
+}
+
+/* 1. Định vị tương đối cho thẻ li cha */
+.categories-bars li {
+    position: relative;
+}
+
+/* 2. Ẩn menu con mặc định */
+.categories-bars .custom-sub-menu {
+    display: none;
+    position: absolute;
+    left: 100%;
+    /* Đẩy menu con sang bên phải hoàn toàn */
+    top: 0;
+    /* Ngang hàng với menu cha */
+    width: 230px;
+    /* Độ rộng menu con */
+    background: #fff;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ddd;
+    /* Viền nhẹ */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    z-index: 999;
+    /* Luôn nổi lên trên */
+}
+
+/* 3. Hiệu ứng Hover: Khi rê chuột vào li cha, hiện menu con */
+.categories-bars li:hover>.custom-sub-menu {
+    display: block;
+}
+
+/* 4. Style cho item trong menu con */
+.categories-bars .custom-sub-menu li {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.categories-bars .custom-sub-menu .categories-bars-item {
+    padding: 10px 15px;
+    /* Padding cho menu con */
+}
+
+/* --- Hiệu ứng Hover cho All Categories --- */
+
+/* 1. Khi rê chuột vào nav, ép menu con hiển thị */
+.hover-open:hover #allCat {
+    display: block !important;
+    /* !important để đè lên thuộc tính ẩn của Bootstrap */
+    animation: fadeIn 0.3s;
+    /* Hiệu ứng hiện dần cho mượt */
+}
+
+/* 2. Định vị menu để nó "nổi" lên trên (Dropdown style) */
+.hover-open #allCat {
+    position: absolute;
+    top: 100%;
+    /* Nằm ngay dưới nút */
+    left: 0;
+    width: 100%;
+    /* Rộng bằng nút cha (250px) */
+    z-index: 999;
+    /* Đảm bảo nằm trên slider/banner */
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    /* Đổ bóng cho đẹp */
+    border-radius: 0 0 5px 5px;
+}
+
+/* Hiệu ứng Fade in đơn giản */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Hover cho Dropdown My Account (và các dropdown nav-item khác) --- */
+
+@media (min-width: 992px) {
+
+    /* Khi rê chuột vào thẻ cha, hiện menu con */
+    .hover-dropdown:hover .dropdown-menu {
+        display: block;
+        /* Hiệu ứng trượt lên nhẹ nhàng */
+        animation: fadeIn 0.3s;
+        /* Xóa khoảng cách margin mặc định của Bootstrap để chuột không bị 'trượt' ra ngoài */
+        margin-top: 0;
+    }
+}
+
+/* (Tùy chọn) Nếu menu bị lệch, bạn có thể căn chỉnh lại vị trí */
+.hover-dropdown .dropdown-menu {
+    right: 0;
+    /* Căn phải cho đẹp vì nó nằm góc phải màn hình */
+    left: auto;
+}
+
+/* --- Hiệu ứng Hover cho Item danh mục --- */
+
+/* 1. Khi hover vào thẻ a (item) */
+.categories-bars-item:hover {
+    color: #ffffff !important;
+    /* Đổi chữ thành trắng */
+    background-color: var(--bs-primary);
+    /* Đổi nền thành màu chủ đạo (hoặc mã màu bạn thích, vd: #FF6F61) */
+    text-decoration: none;
+    /* Bỏ gạch chân */
+    transition: all 0.3s;
+    /* Hiệu ứng chuyển màu mượt */
+}
+
+/* 2. Đổi luôn màu của icon mũi tên thành trắng khi hover */
+/* Vì trong PHP bạn đang để class 'text-muted' cho icon, nên cần CSS này để đè lên */
+.categories-bars-item:hover i {
+    color: #ffffff !important;
+}
+
+/* Help Page Styles */
+.help-hero {
+    background: #f0f2f5;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.help-hero input {
+    padding: 15px;
+    width: 50%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.help-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 50px 20px;
+}
+
+.grid-item {
+    border: 1px solid #eee;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.grid-item:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.help-faq {
+    max-width: 800px;
+    margin: 0 auto 50px;
+}
+
+.faq-item details {
+    background: #fff;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.faq-item summary {
+    font-weight: bold;
+    list-style: none;
+    /* Hide default triangle */
+}
+
+/* --- Layout chung của trang Support --- */
+.support-header {
+    background: #f0f2f5;
+    /* Màu chủ đạo */
+    color: #fff;
+    padding: 60px 0;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.support-content-area {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+}
+
+.row-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+/* Cột thông tin bên trái */
+.col-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.info-box {
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.contact-list li {
+    list-style: none;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #ddd;
+}
+
+/* Cột Form bên phải */
+.col-form {
+    flex: 2;
+    /* Form chiếm phần rộng hơn */
+    min-width: 300px;
+}
+
+.form-wrapper {
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eee;
+}
+
+/* --- 1. Container & Layout --- */
+/* Bao quanh form để tránh ảnh hưởng layout khác */
+.cf7-support-form {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 100%;
+}
+
+/* Khoảng cách giữa các dòng */
+.cf7-support-form p {
+    margin-bottom: 20px;
+}
+
+/* --- 2. Style cho Label (Nhãn) --- */
+.cf7-support-form label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    /* Màu xám đậm */
+    margin-bottom: 8px;
+    display: block;
+    text-transform: uppercase;
+    /* Chữ in hoa cho chuyên nghiệp */
+    letter-spacing: 0.5px;
+}
+
+/* Dấu sao bắt buộc */
+.cf7-support-form .required {
+    color: #ef4444;
+    margin-left: 3px;
+}
+
+/* --- 3. Style cho Input, Select, Textarea --- */
+.cf7-support-form input[type="text"],
+.cf7-support-form input[type="email"],
+.cf7-support-form input[type="tel"],
+.cf7-support-form select,
+.cf7-support-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #1f2937;
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    /* Viền xám nhạt */
+    border-radius: 6px;
+    /* Bo góc nhẹ */
+    box-sizing: border-box;
+    /* Để padding không làm vỡ khung */
+    transition: all 0.3s ease;
+    /* Hiệu ứng mượt */
+    outline: none;
+}
+
+/* Hiệu ứng khi click vào (Focus) */
+.cf7-support-form input:focus,
+.cf7-support-form select:focus,
+.cf7-support-form textarea:focus {
+    border-color: #3b82f6;
+    /* Màu xanh dương */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    /* Shadow xanh nhạt bao quanh */
+}
+
+/* Textarea (Ô nội dung) */
+.cf7-support-form textarea {
+    height: 150px;
+    /* Chiều cao cố định */
+    resize: vertical;
+    /* Chỉ cho phép kéo giãn chiều dọc */
+}
+
+/* --- 4. Style cho Nút Gửi (Submit Button) --- */
+.cf7-support-form input[type="submit"] {
+    background-color: #f18c18;
+    /* Màu xanh chủ đạo */
+    color: #ffffff;
+    font-weight: 700;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease-in-out, transform 0.1s;
+    display: inline-block;
+    width: auto;
+    /* Để nút co theo nội dung chữ */
+    min-width: 150px;
+}
+
+/* Hover nút gửi */
+.cf7-support-form input[type="submit"]:hover {
+    background-color: #ea0b0b;
+    /* Xanh đậm hơn */
+}
+
+/* Click nút gửi */
+.cf7-support-form input[type="submit"]:active {
+    transform: scale(0.98);
+    /* Nhấn xuống nhẹ */
+}
+
+/* Loading Spinner (Vòng xoay khi đang gửi) */
+.wpcf7-spinner {
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+/* --- 5. Thông báo Lỗi & Thành công (Rất quan trọng) --- */
+
+/* Dòng báo lỗi nhỏ dưới từng input */
+.wpcf7-not-valid-tip {
+    font-size: 12px;
+    color: #dc2626;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* Khung thông báo chung bên dưới form */
+.wpcf7-response-output {
+    margin: 20px 0 0 !important;
+    padding: 15px !important;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+    border: none !important;
+    /* Bỏ border mặc định xấu xí */
+}
+
+/* Khi gửi thành công (Màu xanh lá) */
+.wpcf7 form.sent .wpcf7-response-output {
+    background-color: #d1fae5;
+    color: #065f46;
+    border-left: 5px solid #059669 !important;
+}
+
+/* Khi có lỗi (Màu đỏ) */
+.wpcf7 form.invalid .wpcf7-response-output,
+.wpcf7 form.failed .wpcf7-response-output {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-left: 5px solid #dc2626 !important;
+}
+
+/* --- 6. Responsive (Mobile) --- */
+@media (max-width: 600px) {
+
+    /* Nếu bạn dùng cấu trúc 2 cột ở bài trước */
+    .two-columns {
+        flex-direction: column;
+    }
+
+    .form-col {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    /* Nút gửi full width trên điện thoại bấm cho dễ */
+    .cf7-support-form input[type="submit"] {
+        width: 100%;
+    }
+}
+
+/* --- Header Topic --- */
+.topic-header {
+    background: #f0f2f5;
+    padding: 40px 0;
+    border-bottom: 1px solid #e1e4e8;
+    margin-bottom: 40px;
+}
+
+.topic-header .breadcrumb {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.topic-header .breadcrumb a {
+    text-decoration: none;
+    color: #0073aa;
+}
+
+.topic-header h1 {
+    margin: 0;
+    font-size: 32px;
+    color: #333;
+}
+
+/* --- Layout 2 Cột --- */
+.topic-container {
+    max-width: 1140px;
+    margin: 0 auto 80px;
+}
+
+.row-topic {
+    display: flex;
+    gap: 50px;
+}
+
+/* --- Sidebar (Sticky) --- */
+.topic-sidebar {
+    flex: 0 0 280px;
+    /* Chiều rộng cố định */
+}
+
+.sticky-menu {
+    position: sticky;
+    top: 20px;
+    /* Cách mép trên màn hình 20px khi cuộn */
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.sticky-menu h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #0073aa;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+.sticky-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sticky-menu ul li {
+    margin-bottom: 12px;
+}
+
+.sticky-menu ul li a {
+    text-decoration: none;
+    color: #555;
+    transition: 0.2s;
+    font-size: 15px;
+    display: block;
+}
+
+.sticky-menu ul li a:hover {
+    color: #0073aa;
+    padding-left: 5px;
+}
+
+.sidebar-support {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px dashed #ddd;
+    text-align: center;
+}
+
+.btn-small {
+    display: inline-block;
+    background: #333;
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* --- Content Area --- */
+.topic-content {
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+}
+
+.content-section {
+    margin-bottom: 50px;
+    scroll-margin-top: 100px;
+    /* Để khi click link không bị che bởi menu header */
+}
+
+.content-section h2 {
+    font-size: 24px;
+    color: #0073aa;
+    margin-bottom: 20px;
+}
+
+/* Style Payment Methods Grid */
+.payment-methods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.method-item {
+    border: 1px solid #e1e4e8;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.method-item i {
+    font-size: 30px;
+    color: #555;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.method-item strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.method-item span {
+    font-size: 13px;
+    color: #777;
+}
+
+/* Alert Box */
+.alert-box {
+    padding: 15px 20px;
+    border-radius: 5px;
+    margin: 20px 0;
+    border-left: 4px solid;
+}
+
+.alert-box.info {
+    background: #e8f4fd;
+    border-color: #0073aa;
+    color: #0d3d5e;
+}
+
+/* Table Style */
+.refund-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.refund-table th,
+.refund-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.refund-table th {
+    background: #f9f9f9;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .row-topic {
+        flex-direction: column-reverse;
+        /* Đưa menu xuống dưới hoặc lên trên tùy ý */
+    }
+
+    .topic-sidebar {
+        flex: auto;
+    }
+
+    .sticky-menu {
+        position: static;
+        /* Mobile thì không cần sticky */
+    }
+}
+
+
+/*  */
+.yith-wcwl-add-to-wishlist {
+    margin: 0 !important;
+}
+
+.yith-wcwl-add-button a,
+.add_to_wishlist.single_add_to_wishlist {
+    background: #fff !important;
+    border: 2px solid #FF8C00 !important;
+    border-radius: 50% !important;
+    width: 44px;
+    height: 44px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    color: #FF8C00 !important;
+    transition: all 0.3s ease;
+}
+
+.yith-wcwl-add-button a:hover,
+.add_to_wishlist.single_add_to_wishlist:hover {
+    background: #FF8C00 !important;
+    color: white !important;
+}
+
+a.added_to_wishlist {
+    color: #e74c3c !important;
 }

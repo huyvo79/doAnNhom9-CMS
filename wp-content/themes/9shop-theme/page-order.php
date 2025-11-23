@@ -10,13 +10,7 @@ $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 $posts_per_page = 10; // Số đơn hàng trên 1 trang
 ?>
 
-<div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s"><?php the_title(); ?></h1>
-    <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
-        <li class="breadcrumb-item"><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li>
-        <li class="breadcrumb-item active text-white">Lịch sử đơn hàng</li>
-    </ol>
-</div>
+<?php get_template_part('template-parts/breadcrumb'); ?>
 
 <div class="container-fluid py-5">
     <div class="container py-5">

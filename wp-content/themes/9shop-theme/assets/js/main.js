@@ -142,20 +142,40 @@
 
 
     // Product Quantity
-    $('.quantity button').on('click', function () {
-        var button = $(this);
-        var oldValue = button.parent().parent().find('input').val();
-        if (button.hasClass('btn-plus')) {
-            var newVal = parseFloat(oldValue) + 1;
-        } else {
-            if (oldValue > 0) {
-                var newVal = parseFloat(oldValue) - 1;
-            } else {
-                newVal = 0;
+    // We use .off().on() to remove any other click events, including the default WooCommerce one,
+    // to prevent the double-increment issue.
+    // This code should only run on single product pages.
+    if ($('body').hasClass('single-product')) {
+        // Use event delegation on document to ensure it works even with AJAX loaded content.
+        // First, turn off any existing click handlers on these buttons to avoid conflicts.
+        $(document).off('click', '.quantity .plus, .quantity .minus');
+
+        // Then, attach our corrected handler.
+        $(document).on('click', '.quantity .plus, .quantity .minus', function(e) {
+            e.preventDefault(); // Prevent default button behavior
+
+            var $button = $(this);
+            var $quantityInput = $button.closest('.quantity').find('input.qty');
+            
+            if (!$quantityInput.length) return;
+
+            var currentValue = parseFloat($quantityInput.val());
+            var max = parseFloat($quantityInput.attr('max')) || 9999; // Fallback if max is not set
+            var min = parseFloat($quantityInput.attr('min')) || 0;   // Fallback if min is not set
+            var step = parseFloat($quantityInput.attr('step')) || 1;
+
+            if ($button.hasClass('plus')) {
+                var newVal = currentValue + step;
+                if (newVal > max) newVal = max;
+            } else { // It's a minus button
+                var newVal = currentValue - step;
+                if (newVal < min) newVal = min;
             }
-        }
-        button.parent().parent().find('input').val(newVal);
-    });
+
+            $quantityInput.val(newVal);
+            $quantityInput.trigger('change'); // Important: Trigger change event for WooCommerce to detect
+        });
+    }
 
 
     
@@ -173,7 +193,4 @@
     });
 
 
-   
-
 })(jQuery);
-

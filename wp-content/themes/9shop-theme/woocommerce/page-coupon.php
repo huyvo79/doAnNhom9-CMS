@@ -6,13 +6,7 @@ Template Name: Trang Mã Giảm Giá (9shop Coupons)
 get_header();
 ?>
 
-<div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s"><?php the_title(); ?></h1>
-    <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
-        <li class="breadcrumb-item"><a href="<?php echo esc_url(home_url('/')); ?>">Home</a></li>
-        <li class="breadcrumb-item active text-white"><?php the_title(); ?></li>
-    </ol>
-</div>
+<?php get_template_part('template-parts/breadcrumb'); ?>
 
 <div class="container-fluid coupon-page py-5">
     <div class="container py-5">
@@ -61,7 +55,7 @@ get_header();
                             <h5 class="text-secondary mb-3">Giảm 20%</h5>
                             <p class="text-muted mb-3">Áp dụng cho mọi đơn hàng</p>
                             <div class="d-flex align-items-center justify-content-between bg-white p-2 rounded">
-                                <span class="text-dark fw-bold" id="couponCode2">3C85PD4X</span>
+                                <span class="text-dark fw-bold" id="couponCode2">ACEOI</span>
                                 <button class="btn btn-sm btn-secondary rounded-pill px-3 copy-btn"
                                     data-clipboard-target="#couponCode2">Sao Chép</button>
                             </div>
