@@ -4,13 +4,7 @@ Template Name: FAQ - Hỏi Đáp
 */
 get_header(); ?>
 
-<div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6"><?php the_title(); ?></h1>
-    <ol class="breadcrumb justify-content-center mb-0">
-        <li class="breadcrumb-item"><a href="<?= home_url(); ?>">Home</a></li>
-        <li class="breadcrumb-item active text-white"><?php the_title(); ?></li>
-    </ol>
-</div>
+<?php get_template_part('template-parts/breadcrumb'); ?>
 
 <div class="container py-5">
     <div class="row">
