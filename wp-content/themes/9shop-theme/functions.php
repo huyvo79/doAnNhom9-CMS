@@ -1631,3 +1631,4 @@ function myshop_trigger_view_count_script() {
     <?php
 }
 add_action('wp_footer', 'myshop_trigger_view_count_script');
+
