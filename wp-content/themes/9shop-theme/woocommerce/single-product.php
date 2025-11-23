@@ -194,10 +194,14 @@ global $product;
                             <?php echo do_shortcode('[cusrev_reviews_rating color_stars="#FFBC00" product=""]'); ?>
                         </div>
                         <div class="mb-3">
-                            <div class="btn btn-primary d-inline-block rounded text-white py-1 px-4 me-2"><i
-                                    class="fab fa-facebook-f me-1"></i> Share</div>
-                            <div class="btn btn-secondary d-inline-block rounded text-white py-1 px-4 ms-2"><i
-                                    class="fab fa-twitter ms-1"></i> Share</div>
+                            <p style="margin-bottom:5px; font-weight:bold;">Share now:</p>
+
+                            <?php
+                            // Gọi trực tiếp hàm hiển thị nút share
+                            if (function_exists('ADDTOANY_SHARE_SAVE_KIT')) {
+                                ADDTOANY_SHARE_SAVE_KIT();
+                            }
+                            ?>
                         </div>
                         <div class="d-flex flex-column mb-3">
                             <small>Product SKU: <?php echo $product->get_sku() ?: 'N/A'; ?></small>
@@ -221,6 +225,9 @@ global $product;
                     <!-- Tabs (Description, Reviews, etc.) -->
                     <div class="col-12 mt-4">
                         <?php woocommerce_output_product_data_tabs(); ?>
+                    </div>
+                    <div class="col-12 mt-4">
+                        <?php get_template_part('template-parts/related'); ?>
                     </div>
                     <div class="col-12 bg-light p-4 rounded shadow-sm mb-5 mt-5">
                         <h4 class="mb-5 text-center section-title-highlight">Latest product</h4>

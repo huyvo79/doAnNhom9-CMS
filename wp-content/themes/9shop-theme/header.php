@@ -191,10 +191,23 @@
             </div>
 
             <div class="col-12 col-lg-9">
-                <nav class="navbar navbar-expand-lg navbar-light bg-primary">
-                    <a href="<?php echo home_url(); ?>" class="navbar-brand d-block d-lg-none">
-                        <h1 class="display-5 text-secondary m-0"><i class="fas fa-shopping-bag text-white me-2"></i>
-                        </h1>
+                <nav class="navbar navbar-expand-lg navbar-light bg-primary ">
+                    <a href="<?php echo home_url(); ?>" class="navbar-brand d-block d-lg-none" style="width: 140px; height: auto;">
+                        <?php
+                        $custom_logo_id = get_theme_mod('custom_logo');
+                        $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
+
+                        if (has_custom_logo()) {
+                            // Render ảnh thủ công với Inline Style cứng để ép kích thước
+                            echo '<img src="' . esc_url($logo[0]) . '" alt="' . get_bloginfo('name') . '" style="height: 80px !important; width: auto !important; max-width: 100%;">';
+                        } else {
+                            // Fallback text
+                            echo '<h1 class="display-5 text-primary m-0">';
+                            echo '<i class="fas fa-shopping-bag text-secondary me-2"></i>';
+                            echo get_bloginfo('name');
+                            echo '</h1>';
+                        }
+                        ?>
                     </a>
 
                     <button class="navbar-toggler ms-auto border-0" type="button" data-bs-toggle="collapse"
@@ -221,6 +234,25 @@
                                 echo '<a href="#" class="nav-item nav-link">Gán Menu đi bạn ơi</a>';
                             }
                             ?>
+                            <a href="<?php echo home_url(); ?>" class="nav-item nav-link <?php if (is_front_page())
+                                   echo 'active'; ?>">Home</a>
+                            <a href="<?php echo esc_url(get_permalink($shop_page_id)); ?>" class="nav-item nav-link <?php if (is_shop() || is_product_category() || is_product_tag() || is_singular('product'))
+                                   echo 'active'; ?>">Shop</a>
+                            <a href="<?php echo esc_url($blog_page_url); ?>" class="nav-item nav-link <?php if (is_page($blog_page_id) || is_singular('post') || is_category() || is_tag())
+                                   echo 'active'; ?>">News</a>
+
+                            <!-- <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                                <div class="dropdown-menu m-0">
+                                    <a href="<?php echo wc_get_cart_url(); ?>" class="dropdown-item">Giỏ hàng (Cart)</a>
+                                    <a href="<?php echo wc_get_checkout_url(); ?>" class="dropdown-item">Thanh toán
+                                        (Checkout)</a>
+                                    <a href="<?php echo get_permalink(get_option('woocommerce_myaccount_page_id')); ?>"
+                                        class="dropdown-item">Tài khoản</a>
+                                </div> -->
+                            <a href="<?php echo esc_url(get_permalink($contact_page_id)); ?>" class="nav-item nav-link me-2 <?php if (is_page($contact_page_id))
+                                   echo 'active'; ?>">Contact
+                                us</a>
                         </div>
 
                         <div class="d-none d-lg-block ms-3">

@@ -362,30 +362,31 @@ function get_product_sale_percentage($product)
     return $percentage . '%';
 }
 
-function custom_archive_products_query($query) {
+function custom_archive_products_query($query)
+{
     // Chỉ áp dụng cho truy vấn chính trên Frontend (không phải trong Admin)
-    if ( is_admin() || ! $query->is_main_query() ) {
+    if (is_admin() || !$query->is_main_query()) {
         return;
     }
 
     // Chỉ áp dụng cho trang lưu trữ sản phẩm/danh mục của WooCommerce
-    if ( $query->is_post_type_archive( 'product' ) || $query->is_tax( 'product_cat' ) ) {
-        
+    if ($query->is_post_type_archive('product') || $query->is_tax('product_cat')) {
+
         // 1. Đặt lại số sản phẩm mỗi trang
-        $query->set( 'posts_per_page', 9 );
+        $query->set('posts_per_page', 9);
 
         // 2. [TÙY CHỌN] Nếu bạn muốn sắp xếp khác mặc định (Date DESC)
         // $query->set( 'orderby', 'price' );
         // $query->set( 'order', 'ASC' );
-        
+
         // 3. [TUYỆT ĐỐI KHÔNG] sử dụng offset ở đây.
     }
 }
-add_action( 'pre_get_posts', 'custom_archive_products_query' );
+add_action('pre_get_posts', 'custom_archive_products_query');
 
 
 
- 
+
 function myshop_register_category_menu()
 {
     register_nav_menus(array(
@@ -1484,4 +1485,19 @@ function enhanced_trigger_view_count() {
     </script>
     <?php
 }
-?>
+
+// Chèn nút Share vào trang Single Product của WooCommerce
+add_action('woocommerce_share', 'add_addtoany_sharing_buttons', 10);
+// Hoặc chèn dưới nút Add to cart:
+// add_action( 'woocommerce_after_add_to_cart_button', 'add_addtoany_sharing_buttons', 10 );
+
+function add_addtoany_sharing_buttons()
+{
+    if (function_exists('ADDTOANY_SHARE_SAVE_KIT')) {
+        echo '<div class="custom-social-share" style="margin-top: 20px;">';
+        echo '<p style="margin-bottom:5px; font-weight:bold;">Chia sẻ ngay:</p>';
+        ADDTOANY_SHARE_SAVE_KIT(); // Hàm gọi nút share ra
+        echo '</div>';
+    }
+}
+
