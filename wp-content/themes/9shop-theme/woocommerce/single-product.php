@@ -210,6 +210,12 @@ global $product;
                         </div>
 
                         <?php woocommerce_template_single_add_to_cart(); ?>
+                        
+                        <?php
+                        if (function_exists('YITH_WCWL')) {
+                            echo do_shortcode('[yith_wcwl_add_to_wishlist]');
+                        }
+                        ?>
                     </div>
 
                     <!-- Tabs (Description, Reviews, etc.) -->

@@ -1796,3 +1796,33 @@
         /* Mobile thì không cần sticky */
     }
 }
+
+
+/*  */
+.yith-wcwl-add-to-wishlist {
+    margin: 0 !important;
+}
+
+.yith-wcwl-add-button a,
+.add_to_wishlist.single_add_to_wishlist {
+    background: #fff !important;
+    border: 2px solid #FF8C00 !important;
+    border-radius: 50% !important;
+    width: 44px;
+    height: 44px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    color: #FF8C00 !important;
+    transition: all 0.3s ease;
+}
+
+.yith-wcwl-add-button a:hover,
+.add_to_wishlist.single_add_to_wishlist:hover {
+    background: #FF8C00 !important;
+    color: white !important;
+}
+
+a.added_to_wishlist {
+    color: #e74c3c !important;
+}

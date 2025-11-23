@@ -487,3 +487,222 @@ class MyShop_Category_Walker extends Walker_Nav_Menu
     }
 }
 
+
+
+// 1. KIỂM TRA & FIX YITH PLUGIN (BẮT BUỘC)
+add_action('init', 'debug_yith_wishlist_status');
+function debug_yith_wishlist_status() {
+    if (!class_exists('YITH_WCWL')) {
+        error_log('YITH WooCommerce Wishlist: PLUGIN KHÔNG ACTIVE HOẶC LỖI!');
+        return;
+    }
+    error_log('YITH Wishlist: ACTIVE & READY');
+}
+
+// 2. ENQUEUE SCRIPTS + FIX AJAX URL (TRÁNH LOCALHOST)
+add_action('wp_enqueue_scripts', 'enhanced_yith_wishlist_setup');
+function enhanced_yith_wishlist_setup() {
+    if (!class_exists('YITH_WCWL')) return;
+
+    // Load YITH scripts đúng cách
+    wp_enqueue_script('yith-wcwl-main', YITH_WCWL_URL . '/assets/js/jquery.yith-wcwl.js', ['jquery'], YITH_WCWL_VERSION, true);
+    wp_localize_script('yith-wcwl-main', 'yith_wcwl_l10n', [
+        'ajax_url' => admin_url('admin-ajax.php'),  // ÉP ĐÚNG URL, KHÔNG LOCALHOST
+        'redirect_to_cart' => false,
+        'is_wishlist_responsive' => true,
+        'time_to_close_prettyphoto' => 3000,
+        'fragments_index' => 'div.fragments',
+        'is_user_logged_in' => is_user_logged_in(),
+        'nonce' => wp_create_nonce('yith_wcwl_nonce'),
+    ]);
+
+    // Custom JS cho AJAX mượt + hiệu ứng (KHÔNG CONFLICT)
+    wp_add_inline_script('yith-wcwl-main', '
+        jQuery(document).ready(function($) {
+            $(document).on("click", ".add_to_wishlist", function(e) {
+                e.preventDefault();
+                var $this = $(this);
+                var product_id = $this.data("product-id");
+                
+                console.log("Wishlist Click Debug: Product ID = " + product_id);  // DEBUG LOG
+                
+                $.ajax({
+                    type: "POST",
+                    url: yith_wcwl_l10n.ajax_url,
+                    data: {
+                        action: "add_to_wishlist",
+                        add_to_wishlist: product_id,
+                        product_type: "simple",  // Hoặc lấy từ data
+                        nonce: yith_wcwl_l10n.nonce
+                    },
+                    beforeSend: function() {
+                        $this.addClass("loading").html("<i class=\'fas fa-spinner fa-spin\'></i> Đang thêm...");
+                    },
+                    success: function(data) {
+                        console.log("Wishlist AJAX Success:", data);  // DEBUG LOG
+                        
+                        if (data && data.result === "true") {
+                            $this.removeClass("loading").addClass("added");
+                            $this.find("i").removeClass("fa-heart").addClass("fa-heart text-danger");
+                            $this.find(".wishlist-text").text("Đã yêu thích");
+                            
+                            // Toast notification đẹp
+                            if (!$(".wishlist-toast").length) {
+                                $("body").append(\'<div class="wishlist-toast alert alert-success position-fixed" style="top:20px;right:20px;z-index:9999;">Đã thêm vào yêu thích! <i class="fas fa-check ms-2"></i></div>\');
+                            }
+                            $(".wishlist-toast").fadeIn().delay(2000).fadeOut();
+                            
+                            // Trigger YITH event
+                            $(document.body).trigger("added_to_wishlist", [product_id, 0, data]);
+                        } else {
+                            alert("Lỗi thêm wishlist: " + (data.error || "Unknown"));
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Wishlist AJAX Error:", error);  // DEBUG LOG
+                        alert("Lỗi kết nối: " + error);
+                    }
+                });
+            });
+            
+            // Remove from wishlist
+            $(document).on("click", ".remove_from_wishlist", function(e) {
+                e.preventDefault();
+                var $this = $(this);
+                var product_id = $this.data("product-id");
+                
+                $.ajax({
+                    type: "POST",
+                    url: yith_wcwl_l10n.ajax_url,
+                    data: {
+                        action: "remove_from_wishlist",
+                        remove_from_wishlist: product_id,
+                        nonce: yith_wcwl_l10n.nonce
+                    },
+                    beforeSend: function() {
+                        $this.addClass("loading");
+                    },
+                    success: function(data) {
+                        if (data && data.result === "true") {
+                            $this.removeClass("added loading");
+                            $this.find("i").removeClass("fa-heart text-danger").addClass("fa-heart");
+                            $this.find(".wishlist-text").text("Yêu thích");
+                            
+                            $(".wishlist-toast").removeClass("alert-success").addClass("alert-info").text("Đã xóa khỏi yêu thích!").fadeIn().delay(2000).fadeOut();
+                        }
+                    }
+                });
+            });
+        });
+    ');
+}
+
+// 3. TẮT REDIRECT HOÀN TOÀN (KHÔNG LOCALHOST NỮA)
+add_filter('yith_wcwl_redirect_to_wishlist_page', '__return_false');
+add_filter('yith_wcwl_added_to_wishlist_redirect', '__return_false');
+add_filter('yith_wcwl_removed_from_wishlist_redirect', '__return_false');
+
+// 4. NÚT WISHLIST ĐẸP CHO LOOP & SINGLE (CÓ CHECK IN WISHLIST)
+add_action('woocommerce_after_shop_loop_item', 'enhanced_wishlist_button_loop', 15);
+function enhanced_wishlist_button_loop() {
+    if (!class_exists('YITH_WCWL')) return;
+    global $product;
+    $product_id = $product->get_id();
+    $wishlist_url = add_query_arg('add_to_wishlist', $product_id, wc_get_page_permalink('shop'));  // Fallback URL
+    $in_wishlist = YITH_WCWL()->is_product_in_wishlist($product_id);
+
+    echo '<div class="wishlist-btn mt-2 text-center">';
+    echo '<a href="' . esc_url($wishlist_url) . '" 
+              class="add_to_wishlist btn-wishlist ' . ($in_wishlist ? 'added' : '') . '" 
+              data-product-id="' . $product_id . '" 
+              rel="nofollow">
+            <i class="fas ' . ($in_wishlist ? 'fa-heart text-danger' : 'fa-heart') . '"></i>
+            <span class="wishlist-text ms-1">' . ($in_wishlist ? 'Đã yêu thích' : 'Yêu thích') . '</span>
+          </a>';
+    echo '</div>';
+}
+
+add_action('woocommerce_single_product_summary', 'enhanced_wishlist_button_single', 35);
+function enhanced_wishlist_button_single() {
+    if (!class_exists('YITH_WCWL')) return;
+    global $product;
+    $product_id = $product->get_id();
+    $in_wishlist = YITH_WCWL()->is_product_in_wishlist($product_id);
+
+    echo '<div class="single-wishlist-btn mt-4 d-flex align-items-center">';
+    echo '<a href="#" class="add_to_wishlist btn-wishlist ' . ($in_wishlist ? 'added remove_from_wishlist' : '') . '" 
+              data-product-id="' . $product_id . '">
+            <i class="fas ' . ($in_wishlist ? 'fa-heart text-danger' : 'fa-heart') . ' fa-lg me-2"></i>
+            <span>' . ($in_wishlist ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích') . '</span>
+          </a>';
+    echo '</div>';
+}
+
+// =============================
+// 5. VIEW COUNT NÂNG CAO (TĂNG MỖI LẦN VÀO TRANG, KHÔNG DUPLICATE)
+// =============================
+add_action('wp_ajax_update_product_views', 'enhanced_update_product_views');
+add_action('wp_ajax_nopriv_update_product_views', 'enhanced_update_product_views');
+function enhanced_update_product_views() {
+    if (!wp_verify_nonce($_POST['nonce'], 'update_views_nonce')) {
+        wp_send_json_error('Lỗi bảo mật nonce');
+    }
+
+    $product_id = intval($_POST['product_id']);
+    if (!$product_id || !get_post_type($product_id) === 'product') {
+        wp_send_json_error('Sản phẩm không hợp lệ');
+    }
+
+    // Tránh duplicate: Check session hoặc cookie
+    $session_key = 'viewed_product_' . $product_id;
+    if (!isset($_COOKIE[$session_key])) {
+        $views = get_post_meta($product_id, 'product_views', true);
+        $views = $views ? intval($views) + 1 : 1;
+        update_post_meta($product_id, 'product_views', $views);
+        
+        // Set cookie 24h để tránh count lại
+        setcookie($session_key, '1', time() + 86400, '/');
+        
+        error_log("View Count Updated: Product {$product_id} = {$views} views");
+    }
+
+    wp_send_json_success(['views' => get_post_meta($product_id, 'product_views', true)]);
+}
+
+// HIỂN THỊ VIEW COUNT TRONG SINGLE PRODUCT
+add_action('woocommerce_single_product_summary', 'display_product_views', 20);
+function display_product_views() {
+    global $product;
+    $views = get_post_meta($product->get_id(), 'product_views', true);
+    $views = $views ? number_format($views) : 0;
+    echo '<div class="product-views text-muted mb-3 fs-6">
+            <i class="fas fa-eye me-1"></i> ' . $views . ' lượt xem
+          </div>';
+}
+
+// TRIGGER VIEW COUNT AJAX (CHỈ TRÊN SINGLE PRODUCT)
+add_action('wp_footer', 'enhanced_trigger_view_count');
+function enhanced_trigger_view_count() {
+    if (!is_singular('product')) return;
+    global $post;
+    $nonce = wp_create_nonce('update_views_nonce');
+    ?>
+    <script>
+    (function($) {
+        $(document).ready(function() {
+            $.post(yith_wcwl_l10n.ajax_url || '<?php echo admin_url('admin-ajax.php'); ?>', {
+                action: 'update_product_views',
+                product_id: <?php echo $post->ID; ?>,
+                nonce: '<?php echo $nonce; ?>'
+            }, function(response) {
+                console.log('View Count Debug:', response);  // DEBUG LOG
+                if (response.success) {
+                    $('.product-views').html('<i class="fas fa-eye me-1"></i> ' + response.data.views + ' lượt xem');
+                }
+            });
+        });
+    })(jQuery);
+    </script>
+    <?php
+}
+?>
