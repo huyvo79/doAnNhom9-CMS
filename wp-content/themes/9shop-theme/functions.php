@@ -1418,70 +1418,90 @@ function enhanced_wishlist_button_single() {
     echo '</div>';
 }
 
-// =============================
-// 5. VIEW COUNT NÂNG CAO (TĂNG MỖI LẦN VÀO TRANG, KHÔNG DUPLICATE)
-// =============================
-add_action('wp_ajax_update_product_views', 'enhanced_update_product_views');
-add_action('wp_ajax_nopriv_update_product_views', 'enhanced_update_product_views');
-function enhanced_update_product_views() {
-    if (!wp_verify_nonce($_POST['nonce'], 'update_views_nonce')) {
-        wp_send_json_error('Lỗi bảo mật nonce');
+/* ========================================
+   ĐẾM + HIỂN THỊ LƯỢT XEM SẢN PHẨM (VIEW COUNT)
+   Hoạt động mượt, không duplicate, đẹp
+======================================== */
+
+function update_product_view_count() {
+    if (!wp_verify_nonce($_POST['nonce'], 'view_count_nonce')) {
+        wp_die('Bảo mật lỗi!');
     }
 
     $product_id = intval($_POST['product_id']);
-    if (!$product_id || !get_post_type($product_id) === 'product') {
-        wp_send_json_error('Sản phẩm không hợp lệ');
+    if (!$product_id || get_post_type($product_id) !== 'product') {
+        wp_die('Sản phẩm không hợp lệ');
     }
 
-    // Tránh duplicate: Check session hoặc cookie
-    $session_key = 'viewed_product_' . $product_id;
-    if (!isset($_COOKIE[$session_key])) {
-        $views = get_post_meta($product_id, 'product_views', true);
+    // Tránh đếm trùng: dùng cookie 24h
+    $cookie_name = 'viewed_product_' . $product_id;
+    if (!isset($_COOKIE[$cookie_name])) {
+        $views = get_post_meta($product_id, 'product_views_count', true);
         $views = $views ? intval($views) + 1 : 1;
-        update_post_meta($product_id, 'product_views', $views);
-        
-        // Set cookie 24h để tránh count lại
-        setcookie($session_key, '1', time() + 86400, '/');
-        
-        error_log("View Count Updated: Product {$product_id} = {$views} views");
+        update_post_meta($product_id, 'product_views_count', $views);
+
+        // Đặt cookie 24h để không đếm lại
+        setcookie($cookie_name, '1', time() + 86400, '/');
     }
 
-    wp_send_json_success(['views' => get_post_meta($product_id, 'product_views', true)]);
+    // Trả về số lượt xem mới nhất
+    $current_views = get_post_meta($product_id, 'product_views_count', true);
+    wp_send_json_success(array('views' => number_format_i18n($current_views)));
 }
+add_action('wp_ajax_update_product_view_count', 'update_product_view_count');
+add_action('wp_ajax_nopriv_update_product_view_count', 'update_product_view_count');
 
-// HIỂN THỊ VIEW COUNT TRONG SINGLE PRODUCT
-add_action('woocommerce_single_product_summary', 'display_product_views', 20);
-function display_product_views() {
+
+// Hiển thị lượt xem trong trang chi tiết sản phẩm
+function display_product_view_count() {
     global $product;
-    $views = get_post_meta($product->get_id(), 'product_views', true);
-    $views = $views ? number_format($views) : 0;
-    echo '<div class="product-views text-muted mb-3 fs-6">
-            <i class="fas fa-eye me-1"></i> ' . $views . ' lượt xem
+    if (!is_a($product, 'WC_Product')) return;
+
+    $views = get_post_meta($product->get_id(), 'product_views_count', true);
+    $views = $views ? intval($views) : 0;
+    $views_formatted = number_format_i18n($views);
+
+    echo '<div class="product-view-count mb-3 text-muted">
+            <i class="fas fa-eye me-2 text-primary"></i>
+            <strong>' . $views_formatted . ' lượt xem</strong>
           </div>';
 }
+add_action('woocommerce_single_product_summary', 'display_product_view_count', 15);
 
-// TRIGGER VIEW COUNT AJAX (CHỈ TRÊN SINGLE PRODUCT)
-add_action('wp_footer', 'enhanced_trigger_view_count');
-function enhanced_trigger_view_count() {
+
+// Gửi AJAX khi vào trang sản phẩm để tăng lượt xem
+function trigger_view_count_script() {
     if (!is_singular('product')) return;
+
     global $post;
-    $nonce = wp_create_nonce('update_views_nonce');
+    $nonce = wp_create_nonce('view_count_nonce');
     ?>
-    <script>
-    (function($) {
-        $(document).ready(function() {
-            $.post(yith_wcwl_l10n.ajax_url || '<?php echo admin_url('admin-ajax.php'); ?>', {
-                action: 'update_product_views',
-                product_id: <?php echo $post->ID; ?>,
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chỉ chạy 1 lần duy nhất
+        if (sessionStorage.getItem('view_count_sent_<?php echo $post->ID; ?>')) return;
+        sessionStorage.setItem('view_count_sent_<?php echo $post->ID; ?>', '1');
+
+        fetch('<?php echo admin_url("admin-ajax.php"); ?>', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                action: 'update_product_view_count',
+                product_id: '<?php echo $post->ID; ?>',
                 nonce: '<?php echo $nonce; ?>'
-            }, function(response) {
-                console.log('View Count Debug:', response);  // DEBUG LOG
-                if (response.success) {
-                    $('.product-views').html('<i class="fas fa-eye me-1"></i> ' + response.data.views + ' lượt xem');
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const viewElement = document.querySelector('.product-view-count strong');
+                if (viewElement) {
+                    viewElement.textContent = data.data.views + ' lượt xem';
                 }
-            });
-        });
-    })(jQuery);
+            }
+        })
+        .catch(err => console.log('View count error:', err));
+    });
     </script>
     <?php
 }
@@ -1501,3 +1521,113 @@ function add_addtoany_sharing_buttons()
     }
 }
 
+add_action('wp_footer', 'trigger_view_count_script');
+
+
+/**
+ * ========================================
+ * ĐẾM LƯỢT XEM SẢN PHẨM - PHIÊN BẢN HOÀN CHỈNH & AN TOÀN
+ * ========================================
+ */
+
+// 1. AJAX Handler - Tăng lượt xem (cả khách vãng lai và đăng nhập)
+function myshop_increase_product_views() {
+    // Kiểm tra nonce bắt buộc
+    if (!wp_verify_nonce($_POST['nonce'], 'myshop_viewcount_nonce')) {
+        wp_send_json_error(['message' => 'Nonce không hợp lệ']);
+    }
+
+    $product_id = absint($_POST['product_id']);
+    if (!$product_id || get_post_type($product_id) !== 'product') {
+        wp_send_json_error(['message' => 'ID sản phẩm không hợp lệ']);
+    }
+
+    // Lấy lượt xem hiện tại
+    $views = get_post_meta($product_id, '_product_views', true);
+    $views = $views ? intval($views) : 0;
+    $views++;
+
+    // Cập nhật lại
+    update_post_meta($product_id, '_product_views', $views);
+
+    // Trả về lượt xem mới (để hiển thị realtime nếu cần)
+    wp_send_json_success([
+        'views' => $views,
+        'formatted' => number_format_i18n($views) . ' lượt xem'
+    ]);
+}
+add_action('wp_ajax_myshop_increase_views', 'myshop_increase_product_views');
+add_action('wp_ajax_nopriv_myshop_increase_views', 'myshop_increase_product_views');
+
+
+// 2. HIỂN THỊ LƯỢT XEM - BẢN FIX HIỆN 100% (có thêm fallback vị trí)
+function myshop_show_product_views() {
+    if (!is_singular('product')) return;
+    
+    global $post;
+    $views = (int) get_post_meta($post->ID, '_product_views', true);
+
+    // Định dạng đẹp
+    if ($views >= 1000000) {
+        $formatted = round($views / 1000000, 1) . 'M';
+    } elseif ($views >= 1000) {
+        $formatted = round($views / 1000, 1) . 'k';
+    } else {
+        $formatted = number_format_i18n($views);
+    }
+
+    echo '<div class="myshop-product-views text-center my-4" style="font-size: 15px;">
+            <i class="fas fa-eye text-primary me-2"></i>
+            <strong style="color: #212529;">' . esc_html($formatted) . ' lượt xem</strong>
+          </div>';
+}
+// Dùng 2 hook để chắc chắn hiện ra (một trong hai sẽ chạy)
+add_action('woocommerce_single_product_summary', 'myshop_show_product_views', 25);
+add_action('woocommerce_before_add_to_cart_button', 'myshop_show_product_views', 5); // fallback
+
+// 3. Gọi AJAX khi vào trang chi tiết sản phẩm (chỉ chạy 1 lần/ngày cho mỗi sản phẩm)
+function myshop_trigger_view_count_script() {
+    if (!is_singular('product')) return;
+
+    global $post;
+    $product_id = $post->ID;
+    $nonce = wp_create_nonce('myshop_viewcount_nonce');
+    ?>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const viewedKey = "viewed_product_<?php echo $product_id; ?>";
+        
+        // Chỉ tăng view nếu chưa xem trong 24h (dùng localStorage)
+        if (localStorage.getItem(viewedKey)) return;
+
+        // Đánh dấu đã xem trong 24h
+        localStorage.setItem(viewedKey, Date.now());
+
+        // Gửi AJAX tăng lượt xem
+        fetch("<?php echo admin_url('admin-ajax.php'); ?>", {
+            method: "POST",
+            credentials: 'same-origin',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+                action: "myshop_increase_views",
+                product_id: "<?php echo $product_id; ?>",
+                nonce: "<?php echo $nonce; ?>"
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const viewsEl = document.querySelector('.myshop-product-views strong');
+                if (viewsEl) {
+                    viewsEl.innerHTML = data.data.formatted;
+                }
+            }
+        })
+        .catch(err => console.log("View count error:", err));
+    });
+    </script>
+    <?php
+}
+add_action('wp_footer', 'myshop_trigger_view_count_script');

@@ -11,23 +11,19 @@ get_header();
 <div class="container-fluid coupon-page py-5">
     <div class="container py-5">
         <div class="row g-4">
-
             <div class="col-lg-12">
                 <div class="p-4 rounded shadow-sm bg-light mb-5 text-center">
                     <h3 class="text-primary mb-3">Săn Mã Giảm Giá Cực Hot!</h3>
                     <p class="mb-4 text-muted">Sao chép mã bạn muốn và áp dụng tại trang giỏ hàng để nhận ưu đãi.</p>
-
                     <div class="d-flex justify-content-center">
                         <div class="d-flex justify-content-center">
-                            <form action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post"
-                                class="d-flex w-50">
+                            <form action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post" class="d-flex w-50">
                                 <input type="text" name="coupon_code"
                                     class="form-control rounded-pill py-3 px-4 me-2 border-primary"
                                     placeholder="Nhập mã ưu đãi của bạn" required>
                                 <button type="submit" name="apply_coupon"
                                     class="btn btn-secondary rounded-pill px-4 py-3" value="Apply Coupon">Áp
                                     Dụng</button>
-
                                 <?php wp_nonce_field('woocommerce-cart', '_wpnonce'); ?>
                             </form>
                         </div>
@@ -39,7 +35,6 @@ get_header();
             <div class="col-lg-12">
                 <h4 class="mb-4 text-dark"><i class="fas fa-ticket-alt me-2 text-primary"></i> Các Ưu Đãi Hiện Có</h4>
                 <div class="row g-4">
-
                     <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
                         <div class="coupon-card p-4 rounded border border-2 border-primary"
                             style="border-style: dashed !important;">
@@ -81,7 +76,6 @@ get_header();
                             <small class="d-block mt-2">Hết hạn: 31/12/2025</small>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -91,16 +85,18 @@ get_header();
                 <ul class="list-group list-group-flush shadow-sm rounded">
                     <li class="list-group-item py-3"><span class="badge bg-primary me-2">1</span> Tìm và **Sao Chép** mã
                         giảm giá bạn muốn sử dụng.</li>
+
                     <li class="list-group-item py-3"><span class="badge bg-primary me-2">2</span> Thêm sản phẩm vào giỏ
                         hàng và truy cập <a href="<?php echo esc_url(wc_get_cart_url()); ?>"
                             class="text-primary fw-bold">Trang Giỏ Hàng</a>.</li>
-                    <li class="list-group-item py-3"><span class="badge bg-primary me-2">3</span> Dán mã giảm giá vào ô
+                    
+                        <li class="list-group-item py-3"><span class="badge bg-primary me-2">3</span> Dán mã giảm giá vào ô
                         **"Coupon Code"** và nhấn **"Apply Coupon"** để kiểm tra ưu đãi.</li>
-                    <li class="list-group-item py-3"><span class="badge bg-primary me-2">4</span> Tiếp tục đến trang
+                   
+                        <li class="list-group-item py-3"><span class="badge bg-primary me-2">4</span> Tiếp tục đến trang
                         Thanh toán để hoàn tất đơn hàng.</li>
                 </ul>
             </div>
-
         </div>
     </div>
 </div>

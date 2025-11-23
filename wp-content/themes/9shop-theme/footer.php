@@ -51,8 +51,7 @@
                 </div>
             </div>
 
-            <div class="row g-5">
-                
+            <div class="row g-5">                
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
                         <div class="footer-item">
