@@ -4,22 +4,19 @@
  */
 get_header(); ?>
 
-<div class="container-fluid bg-light py-5 mb-5">
-    <div class="container text-center">
-        <h1 class="display-4 text-dark animated slideInDown">Tài khoản của tôi</h1>
-        <nav aria-label="breadcrumb animated slideInDown">
-            <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="<?php echo home_url(); ?>">Trang chủ</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Tài khoản</li>
-            </ol>
-        </nav>
+<div class="container-fluid page-header py-5">
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+        <h1 class="display-6 text-white"><?php the_title(); ?></h1>
     </div>
+    <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
+        <?php woocommerce_breadcrumb(); ?>
+    </ol>
 </div>
 
-<div class="container mb-5">
+<div class="container mb-5 mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="bg-white p-4 p-lg-5 shadow-sm rounded custom-my-account-wrapper">
+            <div class="bg-white p-4 shadow-sm rounded custom-my-account-wrapper">
                 <?php
                 while ( have_posts() ) :
                     the_post();
@@ -36,7 +33,6 @@ get_header(); ?>
     .woocommerce-account .woocommerce {
         display: flex;
         flex-wrap: wrap;
-        gap: 30px;
     }
     
     /* Cột Menu bên trái */

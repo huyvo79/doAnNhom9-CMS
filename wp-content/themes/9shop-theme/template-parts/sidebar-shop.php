@@ -12,7 +12,7 @@ $show_banner   = get_theme_mod('sidebar_enable_banner', true);
 $show_tags     = get_theme_mod('sidebar_enable_tags', true); // Nếu có làm phần tag
 ?>
 
-<div class="col-lg-3 wow fadeInUp" data-wow-delay="0.1s">
+<div id="sidebar-area" class="col-lg-3 wow fadeInUp" data-wow-delay="0.1s">
 
     <?php if ($show_cat) : ?>
     <div class="product-categories mb-4">
