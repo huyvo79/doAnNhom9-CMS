@@ -1530,7 +1530,7 @@ add_action('wp_footer', 'trigger_view_count_script');
  * ========================================
  */
 
-// 1. AJAX Handler - Tăng lượt xem (cả khách vãng lai và đăng nhập)
+// 1. AJAX Handler - Tăng lượt xem 
 function myshop_increase_product_views() {
     // Kiểm tra nonce bắt buộc
     if (!wp_verify_nonce($_POST['nonce'], 'myshop_viewcount_nonce')) {
@@ -1576,7 +1576,7 @@ function myshop_show_product_views() {
         $formatted = number_format_i18n($views);
     }
 
-    echo '<div class="myshop-product-views text-center my-4" style="font-size: 15px;">
+    echo '<div class="myshop-product-views text-left my-4" style="font-size: 15px;">
             <i class="fas fa-eye text-primary me-2"></i>
             <strong style="color: #212529;">' . esc_html($formatted) . ' lượt xem</strong>
           </div>';
