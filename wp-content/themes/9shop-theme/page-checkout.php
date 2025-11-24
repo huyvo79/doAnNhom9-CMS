@@ -5,8 +5,8 @@ Template Name: Trang Thanh Toán (9shop Checkout)
 
 get_header();  
 ?>
+<?php get_template_part('template-parts/breadcrumb'); ?>
 
-    <?php get_template_part('template-parts/breadcrumb'); ?>
 
     <div class="container-fluid px-0">
         <div class="row g-0">

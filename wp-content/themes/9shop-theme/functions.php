@@ -1463,7 +1463,7 @@ function display_product_view_count() {
 
     echo '<div class="product-view-count mb-3 text-muted">
             <i class="fas fa-eye me-2 text-primary"></i>
-            <strong>' . $views_formatted . ' lượt xem</strong>
+            <strong>' . $views_formatted . ' Views</strong>
           </div>';
 }
 add_action('woocommerce_single_product_summary', 'display_product_view_count', 15);
@@ -1496,7 +1496,7 @@ function trigger_view_count_script() {
             if (data.success) {
                 const viewElement = document.querySelector('.product-view-count strong');
                 if (viewElement) {
-                    viewElement.textContent = data.data.views + ' lượt xem';
+                    viewElement.textContent = data.data.views + ' Views';
                 }
             }
         })
@@ -1553,7 +1553,7 @@ function myshop_increase_product_views() {
     // Trả về lượt xem mới (để hiển thị realtime nếu cần)
     wp_send_json_success([
         'views' => $views,
-        'formatted' => number_format_i18n($views) . ' lượt xem'
+        'formatted' => number_format_i18n($views) . ' Views'
     ]);
 }
 add_action('wp_ajax_myshop_increase_views', 'myshop_increase_product_views');
@@ -1576,9 +1576,9 @@ function myshop_show_product_views() {
         $formatted = number_format_i18n($views);
     }
 
-    echo '<div class="myshop-product-views text-center my-4" style="font-size: 15px;">
+    echo '<div class="myshop-product-views my-4" style="font-size: 15px;">
             <i class="fas fa-eye text-primary me-2"></i>
-            <strong style="color: #212529;">' . esc_html($formatted) . ' lượt xem</strong>
+            <strong style="color: #212529;">' . esc_html($formatted) . ' View</strong>
           </div>';
 }
 // Dùng 2 hook để chắc chắn hiện ra (một trong hai sẽ chạy)
