@@ -1633,3 +1633,141 @@ function myshop_trigger_view_count_script() {
 }
 add_action('wp_footer', 'myshop_trigger_view_count_script');
 
+/**
+ * Ghi lại sản phẩm vừa xem vào Cookie
+ * Dán code này vào file functions.php của theme
+ */
+function devvn_track_product_view() {
+    if ( ! is_singular( 'product' ) ) {
+        return;
+    }
+
+    global $post;
+
+    if ( empty( $_COOKIE['woocommerce_recently_viewed'] ) ) {
+        $viewed_products = array();
+    } else {
+        $viewed_products = wp_unslash( $_COOKIE['woocommerce_recently_viewed'] );
+        $viewed_products = explode( '|', $viewed_products );
+    }
+
+    // Thêm ID sản phẩm hiện tại vào mảng nếu chưa có
+    if ( ! in_array( $post->ID, $viewed_products ) ) {
+        $viewed_products[] = $post->ID;
+    }
+
+    // Giới hạn số lượng lưu trữ (ví dụ: lưu 15 sản phẩm gần nhất)
+    if ( count( $viewed_products ) > 15 ) {
+        array_shift( $viewed_products );
+    }
+
+    // Lưu cookie trong 30 ngày
+    wc_setcookie( 'woocommerce_recently_viewed', implode( '|', $viewed_products ), time() + 60 * 60 * 24 * 30 );
+}
+add_action( 'template_redirect', 'devvn_track_product_view', 20 );
+
+function myshop_guest_order_tracking_shortcode() {
+    ob_start();
+    
+    // 1. Xử lý Logic khi người dùng bấm nút "Tra cứu"
+    $tracking_result = '';
+    $order_id = isset($_POST['track_order_id']) ? sanitize_text_field($_POST['track_order_id']) : '';
+    $order_phone = isset($_POST['track_order_phone']) ? sanitize_text_field($_POST['track_order_phone']) : '';
+
+    if ( isset($_POST['submit_tracking']) && !empty($order_id) && !empty($order_phone) ) {
+        // Lấy thông tin đơn hàng từ ID
+        $order = wc_get_order( $order_id );
+
+        // Kiểm tra điều kiện:
+        // 1. Đơn hàng tồn tại
+        // 2. Số điện thoại nhập vào KHỚP với số điện thoại trong đơn hàng
+        if ( $order && $order->get_billing_phone() === $order_phone ) {
+            
+            $status = wc_get_order_status_name( $order->get_status() );
+            $total = $order->get_formatted_order_total();
+            $date = wc_format_datetime( $order->get_date_created() );
+            
+            // HTML hiển thị kết quả thành công
+            $tracking_result = '
+            <div class="alert alert-success mt-4 shadow-sm">
+                <h4 class="alert-heading"><i class="fas fa-check-circle text-success me-2"></i>Tìm thấy đơn hàng!</h4>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Mã đơn hàng:</strong> #'.$order_id.'</p>
+                        <p><strong>Ngày đặt:</strong> '.$date.'</p>
+                    </div>
+                    <div class="col-md-6">
+                         <p><strong>Trạng thái:</strong> <span class="badge bg-info text-dark">'.$status.'</span></p>
+                         <p><strong>Tổng tiền:</strong> '.$total.'</p>
+                    </div>
+                </div>
+                
+                <h6 class="mt-3">Chi tiết sản phẩm:</h6>
+                <ul class="list-group list-group-flush bg-white rounded">';
+                
+                // Lặp qua từng sản phẩm trong đơn để hiển thị
+                foreach ( $order->get_items() as $item_id => $item ) {
+                    $tracking_result .= '<li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>'. $item->get_name() .' <small class="text-muted">x '. $item->get_quantity() .'</small></span>
+                        <span class="fw-bold">'. wc_price($order->get_item_total($item)) .'</span>
+                    </li>';
+                }
+                
+            $tracking_result .= '</ul>
+            </div>';
+            
+        } else {
+            // HTML báo lỗi
+            $tracking_result = '
+            <div class="alert alert-danger mt-4 shadow-sm">
+                <i class="fas fa-exclamation-triangle me-2"></i> 
+                Không tìm thấy đơn hàng hoặc Số điện thoại không khớp. Vui lòng kiểm tra lại!
+            </div>';
+        }
+    }
+    ?>
+
+    <div class="tracking-form-wrapper bg-light p-5 rounded shadow-sm mx-auto" style="max-width: 600px;">
+        <h3 class="text-center mb-4 text-uppercase">Kiểm tra đơn hàng</h3>
+        <p class="text-center text-muted mb-4">Nhập mã đơn hàng và số điện thoại bạn dùng để đặt hàng.</p>
+        
+        <form method="post" action="">
+            <div class="mb-3">
+                <label for="track_order_id" class="form-label fw-bold">Mã đơn hàng (Order ID)</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fas fa-hashtag text-primary"></i></span>
+                    <input type="text" class="form-control" name="track_order_id" id="track_order_id" placeholder="Ví dụ: 154" value="<?php echo esc_attr($order_id); ?>" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="track_order_phone" class="form-label fw-bold">Số điện thoại nhận hàng</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fas fa-phone text-primary"></i></span>
+                    <input type="text" class="form-control" name="track_order_phone" id="track_order_phone" placeholder="Ví dụ: 0912345678" value="<?php echo esc_attr($order_phone); ?>" required>
+                </div>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" name="submit_tracking" class="btn btn-primary py-2 rounded-pill fw-bold">
+                    <i class="fas fa-search me-2"></i> Tra cứu ngay
+                </button>
+            </div>
+        </form>
+
+        <?php echo $tracking_result; ?>
+    </div>
+
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('tracking_don_hang', 'myshop_guest_order_tracking_shortcode');
+
+add_action( 'woocommerce_before_shop_loop_item_title', 'myshop_show_out_of_stock_badge' );
+function myshop_show_out_of_stock_badge() {
+    global $product;
+    if ( ! $product->is_in_stock() ) {
+        echo '<span class="badge bg-secondary position-absolute top-0 start-0 m-3 px-3 py-2" style="z-index: 10;">HẾT HÀNG</span>';
+    }
+}

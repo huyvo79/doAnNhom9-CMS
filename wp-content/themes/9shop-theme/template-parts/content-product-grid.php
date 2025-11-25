@@ -83,8 +83,11 @@ if (have_posts()):
 
     <div class="row g-4 align-items-center mb-4">
         <div class="col-xl-7">
-            <form method="get" class="input-group w-100 mx-auto d-flex" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
-                <input type="search" class="form-control p-3" name="s" value="<?php echo isset($_GET['s']) ? esc_attr($_GET['s']) : ''; ?>" placeholder="Tìm sản phẩm..." aria-describedby="search-icon-1">
+            <form method="get" class="input-group w-100 mx-auto d-flex"
+                action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
+                <input type="search" class="form-control p-3" name="s"
+                    value="<?php echo isset($_GET['s']) ? esc_attr($_GET['s']) : ''; ?>" placeholder="Tìm sản phẩm..."
+                    aria-describedby="search-icon-1">
                 <input type="hidden" name="post_type" value="product">
                 <button type="submit" class="input-group-text p-3" id="search-icon-1"><i class="fa fa-search"></i></button>
             </form>
@@ -133,7 +136,9 @@ if (have_posts()):
                                                 alt="<?php the_title(); ?>">
                                         </a>
 
-                                        <?php if ($product->is_on_sale() && $percentage): ?>
+                                        <?php if (!$product->is_in_stock()): ?>
+                                            <div class="product-new" style="background: #6c757d; font-size: 12px;">Hết hàng</div>
+                                        <?php elseif ($product->is_on_sale() && $percentage): ?>
                                             <div class="product-new"><?php echo esc_html($percentage); ?></div>
                                         <?php else: ?>
                                             <div class="product-new">New</div>
@@ -205,10 +210,10 @@ if (have_posts()):
                                             </a>
                                             <?php if ($product->is_on_sale() && $percentage): ?>
                                                 <div class="product-new list-view-badge"><?php echo esc_html($percentage); ?></div>
-                                                <?php else: ?>
+                                            <?php else: ?>
                                                 <div class="product-new list-view-badge">New</div>
                                             <?php endif; ?>
-                                            
+
                                         </div>
                                     </div>
 

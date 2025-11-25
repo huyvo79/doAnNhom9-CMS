@@ -59,56 +59,83 @@ global $product;
                     <div class="featured-product mb-4">
                         <h4 class="mb-3">Recently Viewed</h4>
                         <?php
-                        $args = array(
-                            'post_type' => 'product',
-                            'posts_per_page' => 4,
-                            'tax_query' => array(
-                                array(
-                                    'taxonomy' => 'product_visibility',
-                                    'field' => 'name',
-                                    'terms' => 'featured',
-                                ),
-                            ),
-                        );
+                        // Try to get recently viewed products from the WooCommerce cookie
+                        $viewed_products = array();
+                        if ( ! empty( $_COOKIE['woocommerce_recently_viewed'] ) ) {
+                            $viewed = wp_unslash( $_COOKIE['woocommerce_recently_viewed'] );
+                            $viewed = trim( $viewed, '|' );
+                            if ( $viewed ) {
+                                $viewed_products = array_reverse( explode( '|', $viewed ) );
+                            }
+                        }
 
-                        $featured_query = new WP_Query($args);
+                        // Remove current product from list and keep up to 4
+                        if ( $viewed_products ) {
+                            $current_id = get_the_ID();
+                            $viewed_products = array_filter( $viewed_products, function( $id ) use ( $current_id ) {
+                                return (int) $id !== (int) $current_id;
+                            } );
+                            $viewed_products = array_slice( $viewed_products, 0, 4 );
 
-                        if ($featured_query->have_posts()):
+                            $args = array(
+                                'post_type'      => 'product',
+                                'posts_per_page' => count( $viewed_products ),
+                                'post__in'       => $viewed_products,
+                                'orderby'        => 'post__in',
+                            );
+
+                            $featured_query = new WP_Query( $args );
+                        } else {
+                            // Fallback: show latest products if no recently viewed items
+                            $args = array(
+                                'post_type' => 'product',
+                                'posts_per_page' => 4,
+                                'orderby' => 'date',
+                                'order' => 'DESC',
+                            );
+
+                            $featured_query = new WP_Query( $args );
+                        }
+
+                        if ( $featured_query->have_posts() ) :
                             echo '<ul class="custom-featured-list list-unstyled">'; // Thêm list-unstyled để bỏ chấm đầu dòng mặc định
-                            while ($featured_query->have_posts()):
+                            while ( $featured_query->have_posts() ) :
                                 $featured_query->the_post();
                                 global $product;
-                                $image_url = wp_get_attachment_image_src(get_post_thumbnail_id(), 'thumbnail')[0];
-                                if (!$image_url) {
-                                    $image_url = wc_placeholder_img_src('thumbnail');
+                                $image_url = wp_get_attachment_image_src( get_post_thumbnail_id(), 'thumbnail' );
+                                $image_url = isset( $image_url[0] ) ? $image_url[0] : '';
+                                if ( ! $image_url ) {
+                                    $image_url = wc_placeholder_img_src( 'thumbnail' );
                                 }
                                 ?>
-                                <li class="product-list-item d-flex align-items-center mb-3"> <a href="<?php echo esc_url(get_permalink()); ?>" class="product-image-link me-3" style="width: 60px; flex-shrink: 0;">
-                                        <img src="<?php echo esc_url($image_url); ?>" class="img-fluid rounded"
-                                            alt="<?php echo esc_attr(get_the_title()); ?>">
+                                <li class="product-list-item d-flex align-items-center mb-3"> <a href="<?php echo esc_url( get_permalink() ); ?>" class="product-image-link me-3" style="width: 60px; flex-shrink: 0;">
+                                        <img src="<?php echo esc_url( $image_url ); ?>" class="img-fluid rounded"
+                                            alt="<?php echo esc_attr( get_the_title() ); ?>">
                                     </a>
 
                                     <div class="product-content">
                                         <h6 class="product-title mb-1" style="font-size: 0.9rem;">
-                                            <a href="<?php echo esc_url(get_permalink()); ?>" class="text-decoration-none text-dark">
-                                                <?php echo esc_html(get_the_title()); ?>
+                                            <a href="<?php echo esc_url( get_permalink() ); ?>" class="text-decoration-none text-dark">
+                                                <?php echo esc_html( get_the_title() ); ?>
                                             </a>
                                         </h6>
-                                        <?php echo do_shortcode('[cusrev_reviews_rating color_stars="#FFBC00" product="' . $product->get_id() . '"]'); ?>
+                                        <?php if ( isset( $product ) && is_object( $product ) ) {
+                                            echo do_shortcode( '[cusrev_reviews_rating color_stars="#FFBC00" product="' . $product->get_id() . '"]' );
+                                        } ?>
                                         <span class="price fw-bold text-primary"><?php echo $product->get_price_html(); ?></span>
                                     </div>
                                 </li>
                                 <?php
                             endwhile;
                             echo '</ul>';
-                        else:
-                            echo '<p class="text-muted">Không tìm thấy sản phẩm nổi bật nào.</p>';
+                        else :
+                            echo '<p class="text-muted">Không tìm thấy sản phẩm nào.</p>';
                         endif;
                         wp_reset_postdata();
                         ?>
 
                         <div class="d-flex justify-content-center my-4">
-                            <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>"
+                            <a href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>"
                                 class="btn btn-primary px-4 py-3 rounded-pill w-100">
                                 View More
                             </a>
